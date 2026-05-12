@@ -1,0 +1,26 @@
+[
+  {
+    "class_name": "Tomato___healthy",
+    "nom": "Tomate saine",
+    "description": "Aucun symptôme de maladie. Plante en bonne santé.",
+    "gravite": "low",
+    "symptomes": [],
+    "traitements": [],
+    "conseils_arrosage": "Arrosez régulièrement au pied, sans excès.",
+    "conseils_fertilisation": "Apport équilibré NPK toutes les 2 semaines.",
+    "prevention": ["Inspectez régulièrement", "Éliminez les mauvaises herbes"]
+  },
+  {
+    "class_name": "Tomato___Bacterial_spot",
+    "nom": "Tache bactérienne",
+    "description": "Maladie bactérienne causant des taches brunes sur les feuilles.",
+    "gravite": "med",
+    "symptomes": ["Petites taches imbibées d'eau", "Taches brunes avec halo jaune"],
+    "traitements": [
+      { "icon": "🧴", "titre": "Bouillie bordelaise", "description": "Pulvériser tous les 7 jours" }
+    ],
+    "conseils_arrosage": "Arroser au pied, éviter de mouiller le feuillage.",
+    "conseils_fertilisation": "Éviter excès d'azote.",
+    "prevention": ["Rotation des cultures", "Semences certifiées"]
+  }
+]
