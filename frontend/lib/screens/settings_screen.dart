@@ -35,7 +35,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await prefs.setString('language', lang);
     setState(() => _selectedLanguage = lang);
     
-    // Recharger l'application pour appliquer la langue
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -43,10 +42,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           backgroundColor: AppTheme.greenPrimary,
         ),
       );
-      // Option 1: Recharger l'écran home
-      // Navigator.pushReplacementNamed(context, '/home');
-      
-      // Option 2: Recharger l'application complètement
       Navigator.pushReplacementNamed(context, '/home');
     }
   }
@@ -54,52 +49,59 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthService>(context);
+    final isDarkMode = auth.themeMode == ThemeMode.dark;
 
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: const Text('Paramètres'),
         backgroundColor: AppTheme.greenPrimary,
+        foregroundColor: Colors.white,
       ),
       body: ListView(
         children: [
           const SizedBox(height: 20),
 
           // Section Apparence
-          _buildSectionTitle('Apparence'),
-          _buildThemeTile(auth),
+          _buildSectionTitle('Apparence', isDarkMode),
+          _buildThemeTile(auth, isDarkMode),
 
           const Divider(height: 1, indent: 60),
 
           // Section Notifications
-          _buildSectionTitle('Notifications'),
+          _buildSectionTitle('Notifications', isDarkMode),
           _buildSwitchTile(
             icon: Icons.notifications,
             title: 'Notifications push',
             value: _notificationsEnabled,
             onChanged: (value) => setState(() => _notificationsEnabled = value),
+            isDarkMode: isDarkMode,
           ),
 
           const Divider(height: 1, indent: 60),
 
-          // Section Langue - CORRIGÉE
-          _buildSectionTitle('Langue'),
-          _buildLanguageTile('Français', 'fr', _selectedLanguage, () => _changeLanguage('fr')),
-          _buildLanguageTile('English', 'en', _selectedLanguage, () => _changeLanguage('en')),
+          // Section Langue
+          _buildSectionTitle('Langue', isDarkMode),
+          _buildLanguageTile('Français', 'fr', _selectedLanguage, () => _changeLanguage('fr'), isDarkMode),
+          _buildLanguageTile('English', 'en', _selectedLanguage, () => _changeLanguage('en'), isDarkMode),
 
           const Divider(height: 1, indent: 60),
 
           // Section Données
-          _buildSectionTitle('Données'),
+          _buildSectionTitle('Données', isDarkMode),
           _buildActionTile(
             icon: Icons.delete,
             title: 'Supprimer l\'historique',
             color: AppTheme.redAction,
             onTap: () => _showDeleteDialog(context),
+            isDarkMode: isDarkMode,
           ),
           _buildActionTile(
             icon: Icons.download,
             title: 'Exporter mes données',
+            color: isDarkMode ? Colors.white70 : AppTheme.textDark,
             onTap: () => _showToast('Exportation démarrée'),
+            isDarkMode: isDarkMode,
           ),
 
           const SizedBox(height: 50),
@@ -109,24 +111,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget _buildSectionTitle(String title) {
+  Widget _buildSectionTitle(String title, bool isDarkMode) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
       child: Text(
         title,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.w600,
-          color: AppTheme.greenPrimary,
+          color: isDarkMode ? AppTheme.greenLight : AppTheme.greenPrimary,
         ),
       ),
     );
   }
 
-  Widget _buildThemeTile(AuthService auth) {
+  Widget _buildThemeTile(AuthService auth, bool isDarkMode) {
     return ListTile(
-      leading: const Icon(Icons.dark_mode, color: AppTheme.greenDark),
-      title: const Text('Mode Sombre', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
+      leading: Icon(Icons.dark_mode, color: isDarkMode ? Colors.amber : AppTheme.greenDark),
+      title: Text(
+        'Mode Sombre',
+        style: TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.w500,
+          color: isDarkMode ? Colors.white : AppTheme.textDark,
+        ),
+      ),
       trailing: Switch(
         value: auth.themeMode == ThemeMode.dark,
         onChanged: (value) => auth.toggleTheme(value),
@@ -141,10 +150,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
     required String title,
     required bool value,
     required Function(bool) onChanged,
+    required bool isDarkMode,
   }) {
     return ListTile(
-      leading: Icon(icon, color: AppTheme.greenDark),
-      title: Text(title, style: const TextStyle(fontSize: 15)),
+      leading: Icon(icon, color: isDarkMode ? Colors.white70 : AppTheme.greenDark),
+      title: Text(
+        title,
+        style: TextStyle(
+          fontSize: 15,
+          color: isDarkMode ? Colors.white : AppTheme.textDark,
+        ),
+      ),
       trailing: Switch(
         value: value,
         onChanged: onChanged,
@@ -153,8 +169,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  // NOUVELLE MÉTHODE : pour les boutons de langue
-  Widget _buildLanguageTile(String label, String value, String groupValue, VoidCallback onTap) {
+  Widget _buildLanguageTile(String label, String value, String groupValue, VoidCallback onTap, bool isDarkMode) {
     final isSelected = groupValue == value;
     return ListTile(
       leading: Radio<String>(
@@ -163,9 +178,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
         onChanged: (v) => onTap(),
         activeColor: AppTheme.greenPrimary,
       ),
-      title: Text(label, style: const TextStyle(fontSize: 15)),
+      title: Text(
+        label,
+        style: TextStyle(
+          fontSize: 15,
+          color: isDarkMode ? Colors.white : AppTheme.textDark,
+        ),
+      ),
       trailing: isSelected
-          ? const Icon(Icons.check_circle, color: AppTheme.greenPrimary, size: 20)
+          ? Icon(Icons.check_circle, color: AppTheme.greenPrimary, size: 20)
           : null,
       onTap: onTap,
     );
@@ -174,13 +195,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _buildActionTile({
     required IconData icon,
     required String title,
-    Color color = AppTheme.textDark,
+    required Color color,
     required VoidCallback onTap,
+    required bool isDarkMode,
   }) {
     return ListTile(
       leading: Icon(icon, color: color),
-      title: Text(title, style: TextStyle(fontSize: 15, color: color)),
-      trailing: const Icon(Icons.chevron_right, size: 18),
+      title: Text(
+        title,
+        style: TextStyle(fontSize: 15, color: color),
+      ),
+      trailing: Icon(Icons.chevron_right, size: 18, color: isDarkMode ? Colors.white70 : AppTheme.textLight),
       onTap: onTap,
     );
   }

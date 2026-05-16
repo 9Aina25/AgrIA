@@ -99,3 +99,53 @@ class EmailService:
         </html>
         """
         return EmailService._send_email(user_email, subject, html)
+
+    @staticmethod
+    def send_reset_email(user_email: str, user_name: str, reset_link: str):
+        subject = "🔐 Réinitialisation de votre mot de passe AgrIA"
+        html = f"""
+        <!DOCTYPE html>
+        <html>
+        <head><meta charset="UTF-8"></head>
+        <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+            <div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 10px; overflow: hidden;">
+                <div style="background-color: #2ECC71; padding: 30px; text-align: center;">
+                    <h1 style="color: white; margin: 0;">🔐 AgrIA</h1>
+                </div>
+                <div style="padding: 30px;">
+                    <h2>Bonjour {user_name},</h2>
+                    <p>Vous avez demandé la réinitialisation de votre mot de passe.</p>
+                    <p>Cliquez sur le lien ci-dessous (valable 1 heure) :</p>
+                    <a href="{reset_link}" style="background-color: #2ECC71; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Réinitialiser mon mot de passe</a>
+                    <p style="margin-top: 20px;">Si vous n’êtes pas à l’origine de cette demande, ignorez cet email.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+        return EmailService._send_email(user_email, subject, html)
+    @staticmethod
+    def send_validation_email(user_email: str, user_name: str, validation_link: str):
+            subject = "✅ Validez votre inscription sur AgrIA"
+            html = f"""
+            <!DOCTYPE html>
+            <html>
+            <head><meta charset="UTF-8"></head>
+            <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+                <div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 10px; overflow: hidden;">
+                    <div style="background-color: #2ECC71; padding: 30px; text-align: center;">
+                        <h1 style="color: white; margin: 0;">🌿 AgrIA</h1>
+                    </div>
+                    <div style="padding: 30px;">
+                        <h2>Bonjour {user_name},</h2>
+                        <p>Merci de vous être inscrit sur <strong>AgrIA</strong>.</p>
+                        <p>Pour activer votre compte, veuillez cliquer sur le lien ci-dessous :</p>
+                        <a href="{validation_link}" style="background-color: #2ECC71; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Activer mon compte</a>
+                        <p style="margin-top: 20px;">Ce lien est valable 24 heures.</p>
+                        <p>Si vous n’êtes pas à l’origine de cette inscription, ignorez cet email.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+            return EmailService._send_email(user_email, subject, html)

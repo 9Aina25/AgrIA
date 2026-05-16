@@ -5,6 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../utils/constants.dart';
 
+// Classe de réponse pour l'inscription
+class RegisterResponse {
+  final bool success;
+  final String message;
+  final String? errorDetail;
+  
+  RegisterResponse({
+    required this.success, 
+    required this.message,
+    this.errorDetail,
+  });
+}
+
 class AuthService extends ChangeNotifier {
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
   bool _isAuthenticated = false;
@@ -43,6 +56,61 @@ class AuthService extends ChangeNotifier {
     }
   }
 
+  // NOUVELLE VERSION : registerWithResponse avec RegisterResponse détaillé
+  Future<RegisterResponse> registerWithResponse(String email, String password, String fullName) async {
+    try {
+      final response = await http.post(
+        Uri.parse('${Constants.apiBaseUrl}/register'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'email': email.trim(), 
+          'password': password, 
+          'full_name': fullName.trim()
+        }),
+      );
+      
+      final body = jsonDecode(response.body);
+      
+      if (response.statusCode == 201) {
+        return RegisterResponse(
+          success: true, 
+          message: body['message'] ?? 'Inscription réussie'
+        );
+      } else {
+        // Gérer les différents codes d'erreur
+        String errorMessage = 'Erreur inconnue';
+        String? errorDetail;
+        
+        if (body['detail'] != null) {
+          errorDetail = body['detail'].toString();
+          errorMessage = errorDetail;
+        } else if (body['message'] != null) {
+          errorMessage = body['message'];
+        }
+        
+        // Cas spécifiques
+        if (response.statusCode == 400) {
+          errorMessage = 'Données invalides. Vérifiez votre email et mot de passe.';
+        } else if (response.statusCode == 409) {
+          errorMessage = 'Cet email est déjà utilisé.';
+        }
+        
+        return RegisterResponse(
+          success: false, 
+          message: errorMessage,
+          errorDetail: errorDetail
+        );
+      }
+    } catch (e) {
+      return RegisterResponse(
+        success: false, 
+        message: 'Erreur réseau: $e',
+        errorDetail: e.toString()
+      );
+    }
+  }
+
+  // VERSION ANCIENNE (conservée pour compatibilité)
   Future<bool> register(String email, String password, String fullName) async {
     try {
       debugPrint('📝 Registering user: $email');

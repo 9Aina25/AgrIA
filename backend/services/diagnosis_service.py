@@ -35,33 +35,15 @@ class DiagnosisService:
             return False
     
     def preprocess_image(self, image_bytes):
-        """
-        Prétraitement amélioré de l'image :
-        - Amélioration du contraste
-        - Réduction du bruit
-        - Redimensionnement normalisé
-        """
         try:
             img = Image.open(io.BytesIO(image_bytes)).convert("RGB")
-            
-            # Améliorer le contraste (+20%)
-            enhancer = ImageEnhance.Contrast(img)
-            img = enhancer.enhance(1.2)
-            
-            # Réduire le bruit (filtre médian)
-            img = img.filter(ImageFilter.MedianFilter(size=3))
-            
-            # Redimensionnement
-            img = img.resize((224, 224))
-            
-            # Normalisation
+            img = img.resize((128, 128))  # ← TAILLE CORRECTE (128x128)
             img_array = np.array(img).astype(np.float32) / 255.0
             return np.expand_dims(img_array, axis=0)
         except Exception as e:
             logger.error(f"Erreur prétraitement: {e}")
-            # Fallback sans améliorations
             img = Image.open(io.BytesIO(image_bytes)).convert("RGB")
-            img = img.resize((224, 224))
+            img = img.resize((128, 128))
             img_array = np.array(img).astype(np.float32) / 255.0
             return np.expand_dims(img_array, axis=0)
     

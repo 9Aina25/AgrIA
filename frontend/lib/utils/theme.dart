@@ -11,21 +11,22 @@ class AppTheme {
   static const Color textMid = Color(0xFF4a6a4a);
   static const Color textLight = Color(0xFF7a9a7a);
   static const Color bgWhite = Color(0xFFffffff);
-  static const Color bgPale = Color(0xFFf7fcf9);
-  static const Color border = Color(0xFFe0f0e8);
+  static const Color bgPale = Color(0xFFf8faf8);
+  static const Color border = Color(0xFFe2e8e2);
   
   static ThemeData lightTheme = ThemeData(
     primaryColor: greenPrimary,
     scaffoldBackgroundColor: bgPale,
+    fontFamily: 'Poppins',
     appBarTheme: const AppBarTheme(
-      backgroundColor: bgPale,
+      backgroundColor: Colors.white,
       elevation: 0,
-      centerTitle: true,
+      centerTitle: false,
       iconTheme: IconThemeData(color: textDark),
       titleTextStyle: TextStyle(
         color: textDark,
         fontSize: 20,
-        fontWeight: FontWeight.w700,
+        fontWeight: FontWeight.w600,
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(
@@ -50,23 +51,29 @@ class AppTheme {
         foregroundColor: Colors.white,
         minimumSize: const Size(double.infinity, 50),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+        textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
       ),
+    ),
+    cardTheme: const CardThemeData(
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+      color: Colors.white,
     ),
   );
   
   static ThemeData darkTheme = ThemeData(
     primaryColor: greenPrimary,
     scaffoldBackgroundColor: const Color(0xFF121f12),
+    fontFamily: 'Poppins',
     appBarTheme: const AppBarTheme(
-      backgroundColor: Color(0xFF121f12),
+      backgroundColor: Color(0xFF1a2e1a),
       elevation: 0,
-      centerTitle: true,
+      centerTitle: false,
       iconTheme: IconThemeData(color: Colors.white),
       titleTextStyle: TextStyle(
         color: Colors.white,
         fontSize: 20,
-        fontWeight: FontWeight.w700,
+        fontWeight: FontWeight.w600,
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(
@@ -91,8 +98,13 @@ class AppTheme {
         foregroundColor: Colors.white,
         minimumSize: const Size(double.infinity, 50),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+        textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
       ),
+    ),
+    cardTheme: const CardThemeData(
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+      color: Color(0xFF1e301e),
     ),
   );
 }

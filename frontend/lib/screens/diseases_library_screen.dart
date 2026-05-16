@@ -183,13 +183,13 @@ class _DiseasesLibraryScreenState extends State<DiseasesLibraryScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (description.isNotEmpty) ...[
-                  const Text('📋 Description', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                  const Text(' Description', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 6),
                   Text(description, style: const TextStyle(fontSize: 13, height: 1.4)),
                   const SizedBox(height: 16),
                 ],
                 if (symptomes.isNotEmpty) ...[
-                  const Text('⚠️ Symptômes', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                  const Text(' Symptômes', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 6),
                   ...symptomes.map((s) => Padding(
                     padding: const EdgeInsets.only(left: 8, bottom: 4),
@@ -198,7 +198,7 @@ class _DiseasesLibraryScreenState extends State<DiseasesLibraryScreen> {
                   const SizedBox(height: 16),
                 ],
                 if (traitements.isNotEmpty) ...[
-                  const Text('💊 Traitements', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                  const Text(' Traitements', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 6),
                   ...traitements.map((t) => Container(
                     margin: const EdgeInsets.only(bottom: 10),

@@ -1,8 +1,8 @@
 import os
 from config.settings import settings
 
-# Liste des 38 classes (ordre du modèle)
-CLASS_NAMES = [
+# Liste des 38 classes (gardée pour compatibilité)
+CLASS_NAMES_FULL = [
     'Pepper__bell___Bacterial_spot', 'Pepper__bell___healthy',
     'Potato___Early_blight', 'Potato___Late_blight', 'Potato___healthy',
     'Tomato___Bacterial_spot', 'Tomato___Early_blight', 'Tomato___Late_blight',
@@ -14,11 +14,14 @@ CLASS_NAMES = [
     'Corn___Northern_Leaf_Blight', 'Grape___Black_rot', 'Grape___Esca_(Black_Measles)',
     'Grape___healthy', 'Grape___Leaf_blight_(Isariopsis_Leaf_Spot)', 'Orange___Haunglongbing_(Citrus_greening)',
     'Peach___Bacterial_spot', 'Peach___healthy', 'Raspberry___healthy', 'Soybean___healthy',
-    'Squash___Powdery_mildew', 'Strawberry___healthy', 'Strawberry___Leaf_scorch','Non_plant'
+    'Squash___Powdery_mildew', 'Strawberry___healthy', 'Strawberry___Leaf_scorch'
 ]
 
-def get_class_names():
-    return CLASS_NAMES
-
+# Utiliser le modèle final de tomate
 def get_model_path():
-    return os.path.abspath(settings.MODEL_PATH)
+    return os.path.abspath("tomato_11classes_final.keras")
+
+def get_class_names():
+    # On retourne une liste vide ici, car les classes seront chargées depuis classes.json
+    # Mais on garde la liste complète pour compatibilité
+    return CLASS_NAMES_FULL

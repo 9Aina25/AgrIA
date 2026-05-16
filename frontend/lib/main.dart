@@ -45,11 +45,11 @@ class MyApp extends StatelessWidget {
               '/login': (context) => const LoginScreen(),
               '/register': (context) => const RegisterScreen(),
               '/home': (context) => const HomeScreen(),
-              '/garden': (context) => const GardenScreen(),
-              '/journal': (context) => const JournalScreen(),
               '/scan': (context) => const DiagnosticScreen(),
               '/library': (context) => const LibraryScreen(),
               '/history': (context) => const HistoryScreen(),
+              '/garden': (context) => const GardenScreen(),
+              '/journal': (context) => const JournalScreen(),
               '/profile': (context) => const ProfileScreen(),
             },
           );

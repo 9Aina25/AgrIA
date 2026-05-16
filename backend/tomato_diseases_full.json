@@ -1,0 +1,278 @@
+{
+    "Tomato___Bacterial_spot": {
+      "nom": "Tache bactérienne",
+      "nom_scientifique": "Xanthomonas campestris pv. vesicatoria",
+      "description": "Maladie bactérienne qui affecte les feuilles, les tiges et les fruits. Les symptômes apparaissent sous forme de petites taches imbibées d'eau qui deviennent brunes avec un halo jaune.",
+      "symptomes": [
+        "Petites taches imbibées d'eau sur les feuilles (1-3 mm)",
+        "Taches brunes avec halo jaune caractéristique",
+        "Taches sur les fruits (points noirs surélevés)",
+        "Défoliation sévère dans les cas graves",
+        "Réduction du rendement jusqu'à 50%"
+      ],
+      "traitements": [
+        {"type": "chimique", "titre": "Bouillie bordelaise", "description": "Pulvériser à 2% tous les 7-10 jours", "icone": "🧴"},
+        {"type": "chimique", "titre": "Cuivre hydroxyle", "description": "Appliquez au premier signe d'infection", "icone": "🧪"},
+        {"type": "biologique", "titre": "Bacillus subtilis", "description": "Pulvérisation foliaire préventive", "icone": "🌿"},
+        {"type": "cultural", "titre": "Retrait des feuilles infectées", "description": "Éliminez et brûlez les parties atteintes", "icone": "✂️"}
+      ],
+      "conseils_arrosage": "Arrosez au pied le matin, évitez les aspersions.",
+      "conseils_fertilisation": "Évitez l'excès d'azote qui favorise la maladie.",
+      "prevention": [
+        "Rotation des cultures (3-4 ans)",
+        "Utilisez des semences certifiées exemptes de bactéries",
+        "Désinfectez les outils de taille",
+        "Éliminez les résidus de culture après récolte"
+      ],
+      "gravite": "élevée",
+      "categorie": "Bactérienne"
+    },
+    "Tomato___Early_blight": {
+      "nom": "Mildiou précoce",
+      "nom_scientifique": "Alternaria solani",
+      "description": "Maladie fongique très commune qui attaque les feuilles, les tiges et les fruits. Se développe particulièrement par temps chaud et humide.",
+      "symptomes": [
+        "Taches brunes concentriques sur les feuilles inférieures (forme d'œil de grenouille)",
+        "Jaunissement progressif du feuillage",
+        "Chute prématurée des feuilles",
+        "Taches nécrotiques sur les tiges",
+        "Fruits avec des taches déprimées autour du pédoncule"
+      ],
+      "traitements": [
+        {"type": "chimique", "titre": "Chlorothalonil", "description": "Pulvériser tous les 7-10 jours", "icone": "🧴"},
+        {"type": "chimique", "titre": "Mancozèbe", "description": "Application préventive dès les premiers signes", "icone": "🧪"},
+        {"type": "biologique", "titre": "Purin de prêle", "description": "Renforce les défenses naturelles", "icone": "🌿"},
+        {"type": "biologique", "titre": "Bicarbonate de soude", "description": "Mélangez 1 cuillère/L d'eau", "icone": "🥄"}
+      ],
+      "conseils_arrosage": "Arrosez au pied le matin, évitez de mouiller les feuilles.",
+      "conseils_fertilisation": "Fertilisation équilibrée, évitez les excès d'azote.",
+      "prevention": [
+        "Rotation des cultures (3 ans minimum)",
+        "Retirez les feuilles basses des plants",
+        "Utilisez des variétés résistantes (ex: 'Mountain Magic')",
+        "Paillage pour éviter les éclaboussures",
+        "Désinfectez les outils entre les plants"
+      ],
+      "gravite": "élevée",
+      "categorie": "Fongique"
+    },
+    "Tomato___healthy": {
+      "nom": "Tomate saine",
+      "nom_scientifique": "-",
+      "description": "Aucun signe de maladie détecté. Votre plante est en bonne santé ! Continuez vos bonnes pratiques culturales.",
+      "symptomes": [
+        "✅ Feuilles vertes et vigoureuses",
+        "✅ Tiges fermes et robustes",
+        "✅ Fruits bien formés",
+        "✅ Croissance normale"
+      ],
+      "traitements": [
+        {"type": "preventif", "titre": "Entretien régulier", "description": "Surveillez vos plantes chaque semaine", "icone": "🔍"},
+        {"type": "preventif", "titre": "Purin d'ortie", "description": "Application mensuelle pour renforcer", "icone": "🌿"}
+      ],
+      "conseils_arrosage": "Arrosage régulier mais modéré. Laissez sécher la surface entre deux arrosages.",
+      "conseils_fertilisation": "Apportez du compost ou un engrais organique une fois par mois.",
+      "prevention": [
+        "Inspectez vos plantes régulièrement",
+        "Maintenez une bonne aération",
+        "Éliminez les mauvaises herbes",
+        "Pratiquez la rotation des cultures"
+      ],
+      "gravite": "aucune",
+      "categorie": "Sain"
+    },
+    "Tomato___Late_blight": {
+      "nom": "Mildiou tardif",
+      "nom_scientifique": "Phytophthora infestans",
+      "description": "Maladie très destructrice causée par un oomycète. C'est la maladie la plus redoutée des tomates et pommes de terre.",
+      "symptomes": [
+        "Taches brun-olive sur les feuilles",
+        "Duvet blanc-grisâtre sous les feuilles (sporulation)",
+        "Taches brunes sur les fruits (pourriture)",
+        "Jaunissement et flétrissement rapide",
+        "Destruction complète en quelques jours"
+      ],
+      "traitements": [
+        {"type": "chimique", "titre": "Bouillie bordelaise", "description": "Pulvériser tous les 5-7 jours en prévention", "icone": "🧴"},
+        {"type": "chimique", "titre": "Fongicide systémique", "description": "Mandipropamide ou cymoxanil", "icone": "🧪"},
+        {"type": "biologique", "titre": "Purin de consoude", "description": "Renforce la résistance", "icone": "🌿"}
+      ],
+      "conseils_arrosage": "Arrosez au pied strictement. Évitez toute humidité sur les feuilles.",
+      "conseils_fertilisation": "Privilégiez le potassium, évitez l'azote.",
+      "prevention": [
+        "Rotation des cultures (4 ans)",
+        "Utilisez des variétés résistantes",
+        "Éliminez les plants infectés immédiatement",
+        "Espacez les plants pour l'aération",
+        "Traitez préventivement en périodes à risque"
+      ],
+      "gravite": "très élevée",
+      "categorie": "Fongique"
+    },
+    "Tomato___Leaf_Mold": {
+      "nom": "Cladosporiose",
+      "nom_scientifique": "Passalora fulva",
+      "description": "Maladie fongique fréquente en serre ou sous fortes humidités. Attaque principalement les feuilles.",
+      "symptomes": [
+        "Taches jaunes sur le dessus des feuilles",
+        "Moisissure olive-verte sous les feuilles",
+        "Enroulement des feuilles",
+        "Dessèchement prématuré",
+        "Réduction de la photosynthèse"
+      ],
+      "traitements": [
+        {"type": "chimique", "titre": "Fongicide à base de soufre", "description": "Appliquez par temps frais", "icone": "🧴"},
+        {"type": "biologique", "titre": "Bicarbonate de potassium", "description": "Pulvérisation hebdomadaire", "icone": "🧂"},
+        {"type": "cultural", "titre": "Amélioration de l'aération", "description": "Taillez les feuilles basses", "icone": "✂️"}
+      ],
+      "conseils_arrosage": "Évitez les arrosages en fin de journée. Réduisez l'humidité ambiante.",
+      "conseils_fertilisation": "Maintenez un bon équilibre NPK.",
+      "prevention": [
+        "Aérez régulièrement la serre",
+        "Évitez la surdensité de plantation",
+        "Utilisez des variétés résistantes",
+        "Éliminez les feuilles infectées"
+      ],
+      "gravite": "moyenne",
+      "categorie": "Fongique"
+    },
+    "Tomato___Septoria_leaf_spot": {
+      "nom": "Septoriose",
+      "nom_scientifique": "Septoria lycopersici",
+      "description": "Maladie fongique très répandue. Apparaît d'abord sur les feuilles inférieures par temps humide.",
+      "symptomes": [
+        "Petites taches grises circulaires",
+        "Points noirs au centre des taches (pycnides)",
+        "Jaunissement puis brunissement",
+        "Chute des feuilles",
+        "Progression vers le haut de la plante"
+      ],
+      "traitements": [
+        {"type": "chimique", "titre": "Cuivre oxychlorure", "description": "Pulvériser tous les 7-10 jours", "icone": "🧴"},
+        {"type": "biologique", "titre": "Purin de prêle", "description": "Action fongicide naturelle", "icone": "🌿"},
+        {"type": "cultural", "titre": "Retrait des feuilles infectées", "description": "Supprimez les feuilles les plus basses", "icone": "✂️"}
+      ],
+      "conseils_arrosage": "Arrosez au pied, évitez les éclaboussures.",
+      "conseils_fertilisation": "Fertilisation équilibrée pour maintenir la vigueur.",
+      "prevention": [
+        "Rotation des cultures",
+        "Paillage pour éviter les éclaboussures",
+        "Espacez les plants",
+        "Éliminez les résidus de culture"
+      ],
+      "gravite": "moyenne",
+      "categorie": "Fongique"
+    },
+    "Tomato___Spider_mites_Two-spotted_spider_mite": {
+      "nom": "Acariens (Tétranyques)",
+      "nom_scientifique": "Tetranychus urticae",
+      "description": "Ravageurs microscopiques qui piquent les feuilles et sucent la sève. Provoquent des décolorations.",
+      "symptomes": [
+        "Points jaunes sur les feuilles (stippling)",
+        "Toiles fines sous les feuilles",
+        "Feuilles qui se dessèchent",
+        "Populations visibles à la loupe",
+        "Affaiblissement général de la plante"
+      ],
+      "traitements": [
+        {"type": "biologique", "titre": "Savon noir", "description": "Pulvériser dilué à 5% sur les feuilles", "icone": "🧼"},
+        {"type": "biologique", "titre": "Huile de neem", "description": "Action anti-oviposition", "icone": "🌿"},
+        {"type": "biologique", "titre": "Acariens prédateurs", "description": "Introduire Phytoseiulus persimilis", "icone": "🐞"},
+        {"type": "cultural", "titre": "Aspersion d'eau", "description": "Douchez le feuillage", "icone": "💧"}
+      ],
+      "conseils_arrosage": "Maintenez une humidité suffisante (les acariens détestent l'humidité).",
+      "conseils_fertilisation": "Plantes bien nourries résistent mieux.",
+      "prevention": [
+        "Surveillez le dessous des feuilles",
+        "Évitez les stress hydriques",
+        "Maintenez une hygrométrie élevée",
+        "Éliminez les mauvaises herbes hôtes"
+      ],
+      "gravite": "moyenne",
+      "categorie": "Ravageur"
+    },
+    "Tomato___Target_Spot": {
+      "nom": "Tache cible",
+      "nom_scientifique": "Corynespora cassiicola",
+      "description": "Maladie fongique émergente. Les taches ont des anneaux concentriques caractéristiques.",
+      "symptomes": [
+        "Taches brunes avec anneaux concentriques (cible)",
+        "Fusion des taches",
+        "Jaunissement foliaire",
+        "Défoliation sévère",
+        "Taches sur les tiges"
+      ],
+      "traitements": [
+        {"type": "chimique", "titre": "Azoxystrobine", "description": "Fongicide systémique efficace", "icone": "🧴"},
+        {"type": "chimique", "titre": "Chlorothalonil", "description": "Protection large spectre", "icone": "🧪"},
+        {"type": "biologique", "titre": "Bacillus amyloliquefaciens", "description": "Bio-fongicide", "icone": "🌿"}
+      ],
+      "conseils_arrosage": "Arrosez tôt le matin pour que les feuilles sèchent rapidement.",
+      "conseils_fertilisation": "Apport de potassium pour renforcer les tissus.",
+      "prevention": [
+        "Rotation des cultures",
+        "Élimination des résidus infectés",
+        "Variétés résistantes",
+        "Éviter les blessures sur les plants"
+      ],
+      "gravite": "moyenne",
+      "categorie": "Fongique"
+    },
+    "Tomato___Tomato_mosaic_virus": {
+      "nom": "Virus de la mosaïque",
+      "nom_scientifique": "Tomato Mosaic Virus (ToMV)",
+      "description": "Maladie virale très contagieuse transmise par les graines, les outils, ou le contact.",
+      "symptomes": [
+        "Mosaïque vert clair/vert foncé sur les feuilles",
+        "Déformation des feuilles",
+        "Nanisme de la plante",
+        "Marbrures sur les fruits",
+        "Réduction de rendement significative"
+      ],
+      "traitements": [
+        {"type": "cultural", "titre": "Arrachage", "description": "Éliminez immédiatement les plants infectés", "icone": "🔥"},
+        {"type": "cultural", "titre": "Désinfection", "description": "Nettoyez les outils à l'eau de javel diluée", "icone": "🧼"},
+        {"type": "preventif", "titre": "Semences certifiées", "description": "Utilisez des graines résistantes", "icone": "🌱"}
+      ],
+      "conseils_arrosage": "Lavez-vous les mains entre les manipulations.",
+      "conseils_fertilisation": "Maintien de la vigueur pour limiter l'impact.",
+      "prevention": [
+        "N'utilisez que des semences certifiées",
+        "Désinfectez les outils après chaque utilisation",
+        "Lavez-vous les mains avant de toucher les plants",
+        "Rotation des cultures",
+        "Variétés résistantes"
+      ],
+      "gravite": "élevée",
+      "categorie": "Virale"
+    },
+    "Tomato___Tomato_Yellow_Leaf_Curl_Virus": {
+      "nom": "Virus de l'enroulement jaune",
+      "nom_scientifique": "Tomato Yellow Leaf Curl Virus (TYLCV)",
+      "description": "Maladie virale transmise par les aleurodes (mouches blanches). Provoque un enroulement des feuilles.",
+      "symptomes": [
+        "Enroulement des feuilles vers le haut",
+        "Jaunissement entre les nervures",
+        "Nanisme sévère",
+        "Réduction de la taille des feuilles",
+        "Absence de floraison/fructification"
+      ],
+      "traitements": [
+        {"type": "cultural", "titre": "Arrachage", "description": "Détruisez les plants infectés", "icone": "🔥"},
+        {"type": "biologique", "titre": "Contrôle des aleurodes", "description": "Utilisez du savon noir", "icone": "🧼"},
+        {"type": "biologique", "titre": "Lâchers d'auxiliaires", "description": "Encarsia formosa contre les aleurodes", "icone": "🐞"},
+        {"type": "physique", "titre": "Filets anti-insectes", "description": "Protégez les jeunes plants", "icone": "🛡️"}
+      ],
+      "conseils_arrosage": "Arrosage normal, mais protégez les plants jeunes.",
+      "conseils_fertilisation": "Fertilisation équilibrée pour limiter le stress.",
+      "prevention": [
+        "Utilisez des filets anti-insectes",
+        "Rotation des cultures",
+        "Pièges jaunes pour les aleurodes",
+        "Variétés résistantes",
+        "Éliminez les mauvaises herbes hôtes"
+      ],
+      "gravite": "élevée",
+      "categorie": "Virale"
+    }
+  }

@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import '../services/auth_service.dart';
+import '../utils/constants.dart';
 import '../utils/theme.dart';
 import '../widgets/bottom_nav_bar.dart';
 
@@ -10,152 +15,124 @@ class JournalScreen extends StatefulWidget {
 }
 
 class _JournalScreenState extends State<JournalScreen> {
-  final List<Map<String, dynamic>> _entries = [
-    {
-      "id": "1",
-      "plant": "🍅 Tomate cerise",
-      "plantName": "Tomate",
-      "date": "2025-05-03",
-      "note": "Apparition de taches brunes sur les feuilles inférieures. Traitement appliqué : bouillie bordelaise.",
-      "status": "sick",
-      "action": "Bouillie bordelaise - 2 applications",
-      "hasPhoto": true,
-    },
-    {
-      "id": "2",
-      "plant": "🍓 Fraisier",
-      "plantName": "Fraisier",
-      "date": "2025-04-28",
-      "note": "Les feuilles sont vertes et vigoureuses. Très belle récolte cette semaine.",
-      "status": "healthy",
-      "action": "Arrosage normal + paillage",
-      "hasPhoto": false,
-    },
-    {
-      "id": "3",
-      "plant": "🥔 Pomme de terre",
-      "plantName": "Pomme de terre",
-      "date": "2025-04-25",
-      "note": "Buttage effectué. Les plants sont en bonne santé.",
-      "status": "healthy",
-      "action": "Buttage + arrosage",
-      "hasPhoto": false,
-    },
-  ];
+  List<Map<String, dynamic>> _entries = [];
+  bool _loading = true;
+  String _error = '';
 
-  final TextEditingController _plantController = TextEditingController();
-  final TextEditingController _noteController = TextEditingController();
-  final TextEditingController _actionController = TextEditingController();
-
-  void _deleteEntry(int index) {
-    setState(() {
-      _entries.removeAt(index);
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Note supprimée'), backgroundColor: Colors.red),
-    );
+  @override
+  void initState() {
+    super.initState();
+    _loadEntries();
   }
 
-  void _showAddEntryDialog() {
-    _plantController.clear();
-    _noteController.clear();
-    _actionController.clear();
+  Future<void> _loadEntries() async {
+    final token = Provider.of<AuthService>(context, listen: false).token;
+    if (token == null) {
+      setState(() {
+        _loading = false;
+        _error = 'Non authentifié';
+      });
+      return;
+    }
+
+    try {
+      final response = await http.get(
+        Uri.parse('${Constants.apiBaseUrl}/journal'),
+        headers: {'Authorization': 'Bearer $token'},
+      );
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        setState(() {
+          _entries = data.cast<Map<String, dynamic>>();
+          _loading = false;
+          _error = '';
+        });
+      } else if (response.statusCode == 404) {
+        // Endpoint pas encore créé
+        setState(() {
+          _entries = [];
+          _loading = false;
+          _error = '';
+        });
+      } else {
+        setState(() {
+          _loading = false;
+          _error = 'Erreur de chargement';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _loading = false;
+        _error = '';
+        _entries = [];  // Afficher liste vide au lieu d'une erreur
+      });
+    }
+  }
+
+  Future<void> _addEntry() async {
+    final TextEditingController titleController = TextEditingController();
+    final TextEditingController contentController = TextEditingController();
 
     showDialog(
       context: context,
-      builder: (_) => StatefulBuilder(
-        builder: (context, setDialogState) {
-          String selectedStatus = 'healthy';
-          return AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            title: const Text('Nouvelle note', textAlign: TextAlign.center),
-            content: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    controller: _plantController,
-                    decoration: const InputDecoration(labelText: 'Nom de la plante', hintText: 'Ex: Tomate, Fraisier...'),
-                  ),
-                  const SizedBox(height: 12),
-                  TextField(
-                    controller: _noteController,
-                    decoration: const InputDecoration(labelText: 'Note', hintText: 'Ce que vous observez...'),
-                    maxLines: 3,
-                  ),
-                  const SizedBox(height: 12),
-                  TextField(
-                    controller: _actionController,
-                    decoration: const InputDecoration(labelText: 'Action effectuée', hintText: 'Traitement, arrosage...'),
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      const Text('Statut : ', style: TextStyle(fontWeight: FontWeight.bold)),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: SegmentedButton<String>(
-                          segments: const [
-                            ButtonSegment(value: 'healthy', label: Text('✅ Sain'), icon: Icon(Icons.check_circle, size: 16)),
-                            ButtonSegment(value: 'sick', label: Text('⚠️ Malade'), icon: Icon(Icons.warning_amber, size: 16)),
-                          ],
-                          selected: {selectedStatus},
-                          onSelectionChanged: (set) => setDialogState(() => selectedStatus = set.first),
-                          style: ButtonStyle(
-                            backgroundColor: WidgetStateProperty.resolveWith((states) {
-                              if (states.contains(WidgetState.selected)) {
-                                return selectedStatus == 'healthy' ? Colors.green.shade100 : Colors.orange.shade100;
-                              }
-                              return Colors.white;
-                            }),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+      builder: (_) => AlertDialog(
+        title: const Text('Nouvelle note'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: titleController,
+              decoration: const InputDecoration(labelText: 'Titre'),
             ),
-            actions: [
-              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Annuler')),
-              ElevatedButton(
-                onPressed: () {
-                  if (_plantController.text.isNotEmpty && _noteController.text.isNotEmpty) {
-                    setState(() {
-                      _entries.insert(0, {
-                        "id": DateTime.now().toString(),
-                        "plant": getPlantIcon(_plantController.text),
-                        "plantName": _plantController.text,
-                        "date": DateTime.now().toString().substring(0, 10),
-                        "note": _noteController.text,
-                        "status": selectedStatus,
-                        "action": _actionController.text.isNotEmpty ? _actionController.text : "Non spécifié",
-                        "hasPhoto": false,
-                      });
-                    });
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Note ajoutée'), backgroundColor: AppTheme.greenPrimary),
-                    );
-                  }
-                },
-                style: ElevatedButton.styleFrom(backgroundColor: AppTheme.greenPrimary),
-                child: const Text('Ajouter'),
-              ),
-            ],
-          );
-        },
+            const SizedBox(height: 8),
+            TextField(
+              controller: contentController,
+              decoration: const InputDecoration(labelText: 'Contenu'),
+              maxLines: 3,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Annuler'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final token = Provider.of<AuthService>(context, listen: false).token;
+              if (token == null) return;
+
+              try {
+                final response = await http.post(
+                  Uri.parse('${Constants.apiBaseUrl}/journal'),
+                  headers: {
+                    'Authorization': 'Bearer $token',
+                    'Content-Type': 'application/json',
+                  },
+                  body: jsonEncode({
+                    'title': titleController.text,
+                    'content': contentController.text,
+                    'date': DateTime.now().toIso8601String(),
+                  }),
+                );
+                if (response.statusCode == 200 || response.statusCode == 201) {
+                  Navigator.pop(context);
+                  _loadEntries();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Note ajoutée'), backgroundColor: Colors.green),
+                  );
+                }
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Erreur lors de l\'ajout'), backgroundColor: Colors.red),
+                );
+              }
+            },
+            child: const Text('Ajouter'),
+          ),
+        ],
       ),
     );
-  }
-
-  String getPlantIcon(String plantName) {
-    if (plantName.toLowerCase().contains('tomate')) return '🍅';
-    if (plantName.toLowerCase().contains('fraise')) return '🍓';
-    if (plantName.toLowerCase().contains('pomme de terre')) return '🥔';
-    if (plantName.toLowerCase().contains('poivron')) return '🫑';
-    if (plantName.toLowerCase().contains('laitue')) return '🥬';
-    return '🌿';
   }
 
   @override
@@ -164,141 +141,61 @@ class _JournalScreenState extends State<JournalScreen> {
       appBar: AppBar(
         title: const Text('Mon Journal'),
         backgroundColor: AppTheme.greenPrimary,
-        elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.help_outline),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (_) => AlertDialog(
-                  title: const Text('Conseil'),
-                  content: const Text('Utilisez ce journal pour suivre l\'évolution de vos plantes et les traitements appliqués. Idéal pour garder une trace !'),
-                  actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK'))],
-                ),
-              );
-            },
+            icon: const Icon(Icons.add),
+            onPressed: _addEntry,
           ),
         ],
       ),
-      body: _entries.isEmpty
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.assignment, size: 80, color: Colors.grey.shade300),
-                  const SizedBox(height: 16),
-                  const Text('Aucune note', style: TextStyle(color: Colors.grey)),
-                  const SizedBox(height: 8),
-                  ElevatedButton(
-                    onPressed: _showAddEntryDialog,
-                    style: ElevatedButton.styleFrom(backgroundColor: AppTheme.greenPrimary),
-                    child: const Text('Ajouter ma première note'),
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : _entries.isEmpty
+              ? const Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.assignment, size: 64, color: AppTheme.textLight),
+                      SizedBox(height: 16),
+                      Text('Aucune note', style: TextStyle(color: AppTheme.textLight)),
+                      SizedBox(height: 8),
+                      Text('Appuyez sur + pour ajouter une note', style: TextStyle(fontSize: 12, color: AppTheme.textLight)),
+                    ],
                   ),
-                ],
-              ),
-            )
-          : ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: _entries.length,
-              itemBuilder: (context, index) {
-                final entry = _entries[index];
-                return Card(
-                  elevation: 2,
-                  margin: const EdgeInsets.only(bottom: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
+                )
+              : ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: _entries.length,
+                  itemBuilder: (context, index) {
+                    final entry = _entries[index];
+                    return Card(
+                      margin: const EdgeInsets.only(bottom: 12),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(entry["plant"], style: const TextStyle(fontSize: 22)),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Text(
-                                entry["plantName"],
-                                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                              ),
+                            Text(
+                              entry['title'] ?? 'Sans titre',
+                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                             ),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: entry["status"] == "healthy" ? Colors.green.shade100 : Colors.orange.shade100,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Text(
-                                entry["status"] == "healthy" ? "✅ Sain" : "⚠️ Malade",
-                                style: TextStyle(
-                                  color: entry["status"] == "healthy" ? Colors.green.shade700 : Colors.orange.shade700,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
+                            const SizedBox(height: 8),
+                            Text(
+                              entry['content'] ?? '',
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              entry['date']?.substring(0, 10) ?? '',
+                              style: const TextStyle(fontSize: 12, color: Colors.grey),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            Icon(Icons.calendar_today, size: 14, color: Colors.grey.shade500),
-                            const SizedBox(width: 6),
-                            Text(entry["date"], style: TextStyle(fontSize: 12, color: Colors.grey.shade500)),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        Text(entry["note"], style: const TextStyle(fontSize: 14, height: 1.4)),
-                        if (entry["action"].isNotEmpty) ...[
-                          const SizedBox(height: 12),
-                          Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: AppTheme.greenPale,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(Icons.checklist, size: 18, color: AppTheme.greenPrimary),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      const Text('Action effectuée', style: TextStyle(fontSize: 11, color: Colors.grey)),
-                                      Text(entry["action"], style: const TextStyle(fontSize: 13)),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                        const SizedBox(height: 12),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            TextButton.icon(
-                              onPressed: () => _deleteEntry(index),
-                              icon: const Icon(Icons.delete, size: 18),
-                              label: const Text('Supprimer'),
-                              style: TextButton.styleFrom(foregroundColor: Colors.red),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _showAddEntryDialog,
-        backgroundColor: AppTheme.greenPrimary,
-        elevation: 4,
-        child: const Icon(Icons.add),
-      ),
-      bottomNavigationBar: const BottomNavBar(currentIndex: 3),
+                      ),
+                    );
+                  },
+                ),
+      bottomNavigationBar: const BottomNavBar(currentIndex: 5),
     );
   }
 }

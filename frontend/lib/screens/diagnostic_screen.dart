@@ -52,7 +52,7 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
       
       final result = await Provider.of<ApiService>(context, listen: false).diagnose(
         _imageBytes!,
-        token!,
+        token,
         'image.jpg',
       );
       
@@ -116,11 +116,6 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
                         Text(
                           'Aucune image sélectionnée',
                           style: TextStyle(color: Colors.grey.shade600),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Prenez une photo nette d\'une feuille',
-                          style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
                         ),
                       ],
                     ),
@@ -192,7 +187,7 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
             
             const SizedBox(height: 16),
             
-            // Conseils pour un bon diagnostic
+            // Conseils
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
@@ -213,8 +208,7 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
                   const SizedBox(height: 8),
                   const Text('• Prenez une photo bien éclairée', style: TextStyle(fontSize: 12)),
                   const Text('• Cadrez une seule feuille', style: TextStyle(fontSize: 12)),
-                  const Text('• Fond uni de préférence', style: TextStyle(fontSize: 12)),
-                  const Text('• Évitez les ombres sur la feuille', style: TextStyle(fontSize: 12)),
+                  const Text('• Évitez les ombres', style: TextStyle(fontSize: 12)),
                 ],
               ),
             ),
