@@ -10,6 +10,8 @@ import 'settings_screen.dart';
 import 'help_screen.dart';
 import 'privacy_screen.dart';
 import 'about_screen.dart';
+import 'change_name_screen.dart';
+import 'change_password_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -149,6 +151,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         context,
                         MaterialPageRoute(builder: (_) => const SettingsScreen()),
                       );
+                    },
+                  ),
+                  // Nouveaux menus
+                  _buildMenuItem(
+                    Icons.person_outline,
+                    'Changer mon nom',
+                    Colors.teal,
+                    () {
+                      Navigator.pushNamed(context, '/change-name');
+                    },
+                  ),
+                  _buildMenuItem(
+                    Icons.lock_outline,
+                    'Changer mot de passe',
+                    Colors.orange,
+                    () {
+                      Navigator.pushNamed(context, '/change-password');
                     },
                   ),
                   _buildThemeToggle(auth),

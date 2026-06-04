@@ -5,17 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../utils/constants.dart';
 
-// Classe de réponse pour l'inscription
 class RegisterResponse {
   final bool success;
   final String message;
   final String? errorDetail;
-  
-  RegisterResponse({
-    required this.success, 
-    required this.message,
-    this.errorDetail,
-  });
+  RegisterResponse({required this.success, required this.message, this.errorDetail});
 }
 
 class AuthService extends ChangeNotifier {
@@ -43,7 +37,6 @@ class AuthService extends ChangeNotifier {
       _userEmail = await _storage.read(key: 'email');
       _userName = await _storage.read(key: 'name');
       _isAuthenticated = _token != null && _token!.isNotEmpty;
-      
       debugPrint('🔐 Auth state loaded: isAuthenticated=$_isAuthenticated');
       if (_token != null) {
         debugPrint('🔑 Token found: ${_token!.substring(0, math.min(30, _token!.length))}...');
@@ -56,85 +49,45 @@ class AuthService extends ChangeNotifier {
     }
   }
 
-  // NOUVELLE VERSION : registerWithResponse avec RegisterResponse détaillé
   Future<RegisterResponse> registerWithResponse(String email, String password, String fullName) async {
     try {
       final response = await http.post(
         Uri.parse('${Constants.apiBaseUrl}/register'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'email': email.trim(), 
-          'password': password, 
-          'full_name': fullName.trim()
-        }),
+        body: jsonEncode({'email': email.trim(), 'password': password, 'full_name': fullName.trim()}),
       );
-      
       final body = jsonDecode(response.body);
-      
       if (response.statusCode == 201) {
-        return RegisterResponse(
-          success: true, 
-          message: body['message'] ?? 'Inscription réussie'
-        );
+        return RegisterResponse(success: true, message: body['message'] ?? 'Inscription réussie');
       } else {
-        // Gérer les différents codes d'erreur
         String errorMessage = 'Erreur inconnue';
         String? errorDetail;
-        
         if (body['detail'] != null) {
           errorDetail = body['detail'].toString();
           errorMessage = errorDetail;
         } else if (body['message'] != null) {
           errorMessage = body['message'];
         }
-        
-        // Cas spécifiques
-        if (response.statusCode == 400) {
-          errorMessage = 'Données invalides. Vérifiez votre email et mot de passe.';
-        } else if (response.statusCode == 409) {
-          errorMessage = 'Cet email est déjà utilisé.';
-        }
-        
-        return RegisterResponse(
-          success: false, 
-          message: errorMessage,
-          errorDetail: errorDetail
-        );
+        if (response.statusCode == 400) errorMessage = 'Données invalides. Vérifiez votre email et mot de passe.';
+        else if (response.statusCode == 409) errorMessage = 'Cet email est déjà utilisé.';
+        return RegisterResponse(success: false, message: errorMessage, errorDetail: errorDetail);
       }
     } catch (e) {
-      return RegisterResponse(
-        success: false, 
-        message: 'Erreur réseau: $e',
-        errorDetail: e.toString()
-      );
+      return RegisterResponse(success: false, message: 'Erreur réseau: $e', errorDetail: e.toString());
     }
   }
 
-  // VERSION ANCIENNE (conservée pour compatibilité)
   Future<bool> register(String email, String password, String fullName) async {
     try {
       debugPrint('📝 Registering user: $email');
-      
       final response = await http.post(
         Uri.parse('${Constants.apiBaseUrl}/register'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'email': email.trim(),
-          'password': password,
-          'full_name': fullName.trim()
-        }),
+        body: jsonEncode({'email': email.trim(), 'password': password, 'full_name': fullName.trim()}),
       );
-      
       debugPrint('📥 Register response: ${response.statusCode}');
       debugPrint('📥 Register body: ${response.body}');
-      
-      if (response.statusCode == 201) {
-        debugPrint('✅ User registered successfully');
-        return true;
-      } else {
-        debugPrint('❌ Register failed: ${response.body}');
-        return false;
-      }
+      return response.statusCode == 201;
     } catch (e) {
       debugPrint('❌ Register exception: $e');
       return false;
@@ -144,38 +97,23 @@ class AuthService extends ChangeNotifier {
   Future<bool> login(String email, String password) async {
     try {
       debugPrint('🔐 Logging in: $email');
-      
       final response = await http.post(
         Uri.parse('${Constants.apiBaseUrl}/login'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'email': email.trim(),
-          'password': password
-        }),
+        body: jsonEncode({'email': email.trim(), 'password': password}),
       );
-      
       debugPrint('📥 Login response status: ${response.statusCode}');
       debugPrint('📥 Login response body: ${response.body}');
-      
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        
         _token = data['access_token'];
         _userEmail = data['user']['email'];
         _userName = data['user']['full_name'];
-        
-        // Sauvegarder dans le stockage sécurisé
         await _storage.write(key: 'token', value: _token);
         await _storage.write(key: 'email', value: _userEmail);
         await _storage.write(key: 'name', value: _userName);
-        
-        // Vérifier que le token a bien été sauvegardé
-        final savedToken = await _storage.read(key: 'token');
-        debugPrint('💾 Token saved: ${savedToken != null}');
-        
         _isAuthenticated = true;
         notifyListeners();
-        
         debugPrint('✅ Login successful for: $_userEmail');
         return true;
       } else {
@@ -191,16 +129,12 @@ class AuthService extends ChangeNotifier {
   Future<void> logout() async {
     try {
       debugPrint('🚪 Logging out user: $_userEmail');
-      
       await _storage.deleteAll();
-      
       _token = null;
       _userEmail = null;
       _userName = null;
       _isAuthenticated = false;
-      
       notifyListeners();
-      
       debugPrint('✅ Logout successful');
     } catch (e) {
       debugPrint('❌ Logout error: $e');
@@ -208,11 +142,7 @@ class AuthService extends ChangeNotifier {
   }
 
   Future<String?> getValidToken() async {
-    if (_token != null && _token!.isNotEmpty) {
-      return _token;
-    }
-    
-    // Essayer de récupérer depuis le stockage
+    if (_token != null && _token!.isNotEmpty) return _token;
     final storedToken = await _storage.read(key: 'token');
     if (storedToken != null && storedToken.isNotEmpty) {
       _token = storedToken;
@@ -220,7 +150,99 @@ class AuthService extends ChangeNotifier {
       notifyListeners();
       return storedToken;
     }
-    
     return null;
+  }
+
+  // ================== NOUVELLES MÉTHODES SÉCURITÉ ==================
+
+  Future<bool> changePassword(String currentPassword, String newPassword) async {
+    try {
+      final token = await getValidToken();
+      if (token == null) return false;
+      final response = await http.post(
+        Uri.parse('${Constants.apiBaseUrl}/change-password'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({
+          'current_password': currentPassword,
+          'new_password': newPassword,
+        }),
+      );
+      return response.statusCode == 200;
+    } catch (e) {
+      debugPrint('Change password error: $e');
+      return false;
+    }
+  }
+
+  Future<bool> changeName(String newName) async {
+    try {
+      final token = await getValidToken();
+      if (token == null) return false;
+      final response = await http.post(
+        Uri.parse('${Constants.apiBaseUrl}/change-name'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({'new_name': newName}),
+      );
+      if (response.statusCode == 200) {
+        _userName = newName;
+        await _storage.write(key: 'name', value: newName);
+        notifyListeners();
+        return true;
+      }
+      return false;
+    } catch (e) {
+      debugPrint('Change name error: $e');
+      return false;
+    }
+  }
+
+  Future<bool> forgotPassword(String email) async {
+    try {
+      final response = await http.post(
+        Uri.parse('${Constants.apiBaseUrl}/forgot-password'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': email}),
+      );
+      return response.statusCode == 200;
+    } catch (e) {
+      debugPrint('Forgot password error: $e');
+      return false;
+    }
+  }
+
+  Future<bool> verifyResetCode(String email, String code) async {
+    try {
+      final response = await http.post(
+        Uri.parse('${Constants.apiBaseUrl}/verify-reset-code'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': email, 'code': code}),
+      );
+      return response.statusCode == 200;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> resetPassword(String email, String code, String newPassword) async {
+    try {
+      final response = await http.post(
+        Uri.parse('${Constants.apiBaseUrl}/reset-password'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'email': email,
+          'code': code,
+          'new_password': newPassword,
+        }),
+      );
+      return response.statusCode == 200;
+    } catch (e) {
+      return false;
+    }
   }
 }

@@ -21,7 +21,6 @@ from routes.historique import router as historique_router
 from routes.user import router as user_router
 from routes.plants import router as plants_router
 from routes.journal import router as journal_router
-from routes.password_reset import router as password_reset_router
 
 # Création de l'application
 app = FastAPI(
@@ -47,7 +46,6 @@ app.include_router(historique_router)
 app.include_router(user_router)
 app.include_router(plants_router)
 app.include_router(journal_router)
-app.include_router(password_reset_router)
 
 # Variables globales pour le modèle
 model = None

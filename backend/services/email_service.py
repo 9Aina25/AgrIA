@@ -24,10 +24,10 @@ class EmailService:
                 server.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
                 server.send_message(msg)
             
-            logger.info(f"Email envoyé à {to_email}")
+            logger.info(f"✅ Email envoyé à {to_email}")
             return True
         except Exception as e:
-            logger.error(f"Erreur envoi email: {e}")
+            logger.error(f"❌ Erreur envoi email: {e}")
             return False
     
     @staticmethod
@@ -40,26 +40,14 @@ class EmailService:
         <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
             <div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 10px; overflow: hidden;">
                 <div style="background-color: #2ECC71; padding: 30px; text-align: center;">
-                    <h1 style="color: white; margin: 0;">🌿 AgrIA</h1>
+                    <h1 style="color: white; margin: 0;"> AgrIA</h1>
                     <p style="color: white; margin: 10px 0 0;">Assistant IA pour plantes</p>
                 </div>
                 <div style="padding: 30px;">
                     <h2>Bonjour {user_name},</h2>
                     <p>Merci de vous être inscrit sur <strong>AgrIA</strong> !</p>
-                    <p>Notre intelligence artificielle est prête à vous aider à diagnostiquer vos plantes et à protéger vos cultures.</p>
-                    <p>🌱 <strong>Ce que vous pouvez faire :</strong></p>
-                    <ul>
-                        <li>📸 Diagnostiquer vos plantes par photo</li>
-                        <li>💊 Obtenir des traitements adaptés</li>
-                        <li>📊 Suivre l'historique de vos diagnostics</li>
-                        <li>🎓 Apprendre avec nos quiz</li>
-                        <li>📝 Tenir un journal de bord</li>
-                    </ul>
-                    <a href="https://agria.com/app" style="background-color: #2ECC71; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 10px;">✨ Commencer maintenant</a>
-                </div>
-                <div style="background-color: #f4f4f4; padding: 15px; text-align: center; font-size: 12px; color: #666;">
-                    AgrIA - Votre assistant agricole intelligent<br>
-                    Cet email a été envoyé automatiquement, merci de ne pas y répondre.
+                    <p>Notre intelligence artificielle est prête à vous aider à diagnostiquer vos plantes.</p>
+                    <a href="https://agria.com/app" style="background-color: #2ECC71; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">✨ Commencer</a>
                 </div>
             </div>
         </body>
@@ -68,84 +56,27 @@ class EmailService:
         return EmailService._send_email(user_email, subject, html)
     
     @staticmethod
-    def send_diagnosis_email(user_email: str, user_name: str, diagnosis_result: dict):
-        disease_name = diagnosis_result.get("details", {}).get("nom", "Maladie inconnue")
-        confidence = diagnosis_result.get("confidence", 0)
-        
-        subject = f"🔬 Diagnostic AgrIA - {disease_name}"
-        html = f"""
-        <!DOCTYPE html>
-        <html>
-        <head><meta charset="UTF-8"></head>
-        <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
-            <div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 10px; overflow: hidden;">
-                <div style="background-color: #2ECC71; padding: 30px; text-align: center;">
-                    <h1 style="color: white; margin: 0;">🔬 Résultat du diagnostic</h1>
-                </div>
-                <div style="padding: 30px;">
-                    <h2>Bonjour {user_name},</h2>
-                    <p>Voici le diagnostic de votre plante :</p>
-                    <div style="background-color: #f8f8f8; padding: 20px; border-radius: 10px; margin: 20px 0;">
-                        <p><strong>🪴 Maladie détectée :</strong> {disease_name}</p>
-                        <p><strong>🎯 Confiance :</strong> {confidence}%</p>
-                    </div>
-                    <a href="https://agria.com/app" style="background-color: #2ECC71; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">📱 Voir dans l'application</a>
-                </div>
-                <div style="background-color: #f4f4f4; padding: 15px; text-align: center; font-size: 12px; color: #666;">
-                    AgrIA - Diagnostic automatique par IA
-                </div>
-            </div>
-        </body>
-        </html>
-        """
-        return EmailService._send_email(user_email, subject, html)
-
-    @staticmethod
-    def send_reset_email(user_email: str, user_name: str, reset_link: str):
-        subject = "🔐 Réinitialisation de votre mot de passe AgrIA"
-        html = f"""
-        <!DOCTYPE html>
-        <html>
-        <head><meta charset="UTF-8"></head>
-        <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
-            <div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 10px; overflow: hidden;">
-                <div style="background-color: #2ECC71; padding: 30px; text-align: center;">
-                    <h1 style="color: white; margin: 0;">🔐 AgrIA</h1>
-                </div>
-                <div style="padding: 30px;">
-                    <h2>Bonjour {user_name},</h2>
-                    <p>Vous avez demandé la réinitialisation de votre mot de passe.</p>
-                    <p>Cliquez sur le lien ci-dessous (valable 1 heure) :</p>
-                    <a href="{reset_link}" style="background-color: #2ECC71; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Réinitialiser mon mot de passe</a>
-                    <p style="margin-top: 20px;">Si vous n’êtes pas à l’origine de cette demande, ignorez cet email.</p>
-                </div>
-            </div>
-        </body>
-        </html>
-        """
-        return EmailService._send_email(user_email, subject, html)
-    @staticmethod
     def send_validation_email(user_email: str, user_name: str, validation_link: str):
-            subject = "✅ Validez votre inscription sur AgrIA"
-            html = f"""
-            <!DOCTYPE html>
-            <html>
-            <head><meta charset="UTF-8"></head>
-            <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
-                <div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 10px; overflow: hidden;">
-                    <div style="background-color: #2ECC71; padding: 30px; text-align: center;">
-                        <h1 style="color: white; margin: 0;">🌿 AgrIA</h1>
-                    </div>
-                    <div style="padding: 30px;">
-                        <h2>Bonjour {user_name},</h2>
-                        <p>Merci de vous être inscrit sur <strong>AgrIA</strong>.</p>
-                        <p>Pour activer votre compte, veuillez cliquer sur le lien ci-dessous :</p>
-                        <a href="{validation_link}" style="background-color: #2ECC71; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Activer mon compte</a>
-                        <p style="margin-top: 20px;">Ce lien est valable 24 heures.</p>
-                        <p>Si vous n’êtes pas à l’origine de cette inscription, ignorez cet email.</p>
-                    </div>
+        """Envoyer un email de validation"""
+        subject = "✅ Validez votre inscription sur AgrIA"
+        html = f"""
+        <!DOCTYPE html>
+        <html>
+        <head><meta charset="UTF-8"></head>
+        <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+            <div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 10px; overflow: hidden;">
+                <div style="background-color: #2ECC71; padding: 30px; text-align: center;">
+                    <h1 style="color: white; margin: 0;"> AgrIA</h1>
                 </div>
-            </body>
-            </html>
-            """
-            return EmailService._send_email(user_email, subject, html)
+                <div style="padding: 30px;">
+                    <h2>Bonjour {user_name},</h2>
+                    <p>Merci de vous être inscrit sur <strong>AgrIA</strong>.</p>
+                    <p>Pour activer votre compte, cliquez sur le lien ci-dessous :</p>
+                    <a href="{validation_link}" style="background-color: #2ECC71; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">✅ Activer mon compte</a>
+                    <p style="margin-top: 20px; font-size: 12px; color: #666;">Lien valable 24 heures.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+        return EmailService._send_email(user_email, subject, html)

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import '../utils/constants.dart';
+import 'package:provider/provider.dart';
+import '../services/auth_service.dart';
+import 'verify_code_screen.dart';   // <- Ajout essentiel
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -11,50 +11,56 @@ class ForgotPasswordScreen extends StatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
-  final TextEditingController _emailController = TextEditingController();
+  final _emailController = TextEditingController();
   bool _isLoading = false;
 
-  Future<void> _sendResetEmail() async {
-    setState(() => _isLoading = true);
-    try {
-      final response = await http.post(
-        Uri.parse('${Constants.apiBaseUrl}/forgot-password'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'email': _emailController.text.trim()}),
-      );
-      if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Email de réinitialisation envoyé'), backgroundColor: Colors.green),
-        );
-        Navigator.pop(context);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Email non trouvé'), backgroundColor: Colors.red),
-        );
-      }
-    } catch (e) {
+  Future<void> _sendCode() async {
+    final email = _emailController.text.trim();
+    if (email.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Erreur réseau'), backgroundColor: Colors.red),
+        const SnackBar(content: Text('Email requis')),
+      );
+      return;
+    }
+    setState(() => _isLoading = true);
+    final auth = Provider.of<AuthService>(context, listen: false);
+    final success = await auth.forgotPassword(email);
+    setState(() => _isLoading = false);
+    if (!mounted) return;
+    if (success) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => VerifyCodeScreen(email: email),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Erreur, vérifiez votre email')),
       );
     }
-    setState(() => _isLoading = false);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Mot de passe oublié'), backgroundColor: Colors.green),
+      appBar: AppBar(title: const Text('Mot de passe oublié')),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           children: [
-            const Text('Saisissez votre email pour recevoir un lien de réinitialisation.'),
-            const SizedBox(height: 20),
-            TextField(controller: _emailController, decoration: const InputDecoration(labelText: 'Email')),
-            const SizedBox(height: 20),
+            TextField(
+              controller: _emailController,
+              decoration: const InputDecoration(labelText: 'Email'),
+              keyboardType: TextInputType.emailAddress,
+            ),
+            const SizedBox(height: 24),
             _isLoading
                 ? const CircularProgressIndicator()
-                : ElevatedButton(onPressed: _sendResetEmail, child: const Text('Envoyer')),
+                : ElevatedButton(
+                    onPressed: _sendCode,
+                    child: const Text('Envoyer le code'),
+                  ),
           ],
         ),
       ),

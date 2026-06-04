@@ -26,17 +26,15 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _login() async {
     setState(() => _isLoading = true);
     final auth = Provider.of<AuthService>(context, listen: false);
-    final success = await auth.login(
-        _emailController.text.trim(), _passwordController.text);
+    final success = await auth.login(_emailController.text.trim(), _passwordController.text);
     setState(() => _isLoading = false);
     if (!mounted) return;
     if (success) {
       Navigator.pushReplacementNamed(context, '/home');
     } else {
+      // Message générique (le backend renvoie déjà le bon détail)
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Email ou mot de passe incorrect'),
-            backgroundColor: AppTheme.redAction),
+        const SnackBar(content: Text('Email ou mot de passe incorrect, ou compte non activé')),
       );
     }
   }
@@ -119,7 +117,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     : ElevatedButton(
                         onPressed: _login, child: const Text('Se connecter')),
                 TextButton(
-                  onPressed: () => Navigator.pushNamed(context, '/forgot-password'),
+                  onPressed: () {
+                    print("🔵 Clic sur Mot de passe oublié");
+                    Navigator.pushNamed(context, '/forgot-password');
+                  },
                   child: const Text('Mot de passe oublié ?', style: TextStyle(color: Colors.grey)),
                 ),
                 const SizedBox(height: 16),

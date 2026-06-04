@@ -1,6 +1,6 @@
 from fastapi import HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from jose import JWTError, jwt
+from jose import jwt
 from config.settings import settings
 from database.mongodb import db
 from bson.objectid import ObjectId
@@ -12,18 +12,12 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         user_id = payload.get("sub")
-        
-        if user_id is None:
-            raise HTTPException(status_code=401, detail="Token invalide")
-        
-        # Convertir en ObjectId
-        try:
-            user = db.users.find_one({"_id": ObjectId(user_id)})
-        except:
-            user = db.users.find_one({"_id": user_id})
-        
+        if not user_id:
+            raise HTTPException(401, "Token invalide")
+        user = db.users.find_one({"_id": ObjectId(user_id)})
         if not user:
-            raise HTTPException(status_code=401, detail="Utilisateur non trouvé")
+            raise HTTPException(401, "Utilisateur introuvable")
+        user["_id"] = str(user["_id"])
         return user
-    except JWTError:
-        raise HTTPException(status_code=401, detail="Token invalide")
+    except Exception:
+        raise HTTPException(401, "Token invalide ou expiré")

@@ -18,6 +18,7 @@ class MongoDB:
         self.historique = self.db["historique"]
         self.notifications = self.db["notifications"]
         self.plants = self.db["plants"]
+        self.password_resets = self.db["password_resets"]
         print(f"✅ MongoDB connecté: {settings.MONGO_URI}")
     
     def close(self):
