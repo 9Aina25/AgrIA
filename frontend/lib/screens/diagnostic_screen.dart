@@ -4,7 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_service.dart';
 import '../services/api_service.dart';
-import 'result_screen.dart' as custom;
+import 'result_screen.dart';
 import '../widgets/bottom_nav_bar.dart';
 import '../utils/theme.dart';
 
@@ -59,7 +59,9 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
       if (mounted) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (_) => custom.ResultScreen(result: result)),
+          MaterialPageRoute(
+            builder: (_) => ResultScreen(result: result, imageBytes: _imageBytes!),
+          ),
         );
       }
     } catch (e) {
@@ -75,6 +77,7 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Scanner une plante'),
@@ -94,9 +97,9 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
               height: 250,
               width: double.infinity,
               decoration: BoxDecoration(
-                color: Colors.grey.shade200,
+                color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: Colors.grey.shade300),
+                border: Border.all(color: isDark ? Colors.grey.shade700 : Colors.grey.shade300),
               ),
               child: _imageBytes != null
                   ? ClipRRect(
@@ -111,11 +114,11 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
                   : Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.image, size: 50, color: Colors.grey.shade400),
+                        Icon(Icons.image, size: 50, color: isDark ? Colors.grey.shade500 : Colors.grey.shade400),
                         const SizedBox(height: 10),
                         Text(
                           'Aucune image sélectionnée',
-                          style: TextStyle(color: Colors.grey.shade600),
+                          style: TextStyle(color: isDark ? Colors.grey.shade400 : Colors.grey.shade600),
                         ),
                       ],
                     ),
@@ -163,7 +166,7 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
                   backgroundColor: AppTheme.greenPrimary,
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  disabledBackgroundColor: Colors.grey.shade400,
+                  disabledBackgroundColor: isDark ? Colors.grey.shade700 : Colors.grey.shade400,
                 ),
                 child: _loading
                     ? const SizedBox(
@@ -191,9 +194,9 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.blue.shade50,
+                color: isDark ? Colors.blue.shade900.withOpacity(0.3) : Colors.blue.shade50,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.blue.shade200),
+                border: Border.all(color: isDark ? Colors.blue.shade700 : Colors.blue.shade200),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -206,9 +209,9 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  const Text('• Prenez une photo bien éclairée', style: TextStyle(fontSize: 12)),
-                  const Text('• Cadrez une seule feuille', style: TextStyle(fontSize: 12)),
-                  const Text('• Évitez les ombres', style: TextStyle(fontSize: 12)),
+                  Text('• Prenez une photo bien éclairée', style: TextStyle(fontSize: 12, color: isDark ? Colors.white70 : Colors.black87)),
+                  Text('• Cadrez une seule feuille', style: TextStyle(fontSize: 12, color: isDark ? Colors.white70 : Colors.black87)),
+                  Text('• Évitez les ombres', style: TextStyle(fontSize: 12, color: isDark ? Colors.white70 : Colors.black87)),
                 ],
               ),
             ),

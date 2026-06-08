@@ -3,11 +3,12 @@ description: AgrIA - Diagnostic de plantes par IA
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
+
   url_launcher: ^6.2.0
   http: ^1.1.0
   image_picker: ^1.0.4
@@ -27,3 +28,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/images/maladies/

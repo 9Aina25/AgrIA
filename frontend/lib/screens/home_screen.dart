@@ -4,11 +4,6 @@ import '../services/auth_service.dart';
 import '../utils/theme.dart';
 import '../widgets/bottom_nav_bar.dart';
 import '../widgets/language_selector.dart';
-import 'diagnostic_screen.dart';
-import 'history_screen.dart';
-import 'diseases_library_screen.dart';
-import 'garden_screen.dart';
-import 'journal_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -17,9 +12,10 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthService>(context);
     final userName = auth.userName?.split(' ').first ?? 'Invité';
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: AppTheme.bgPale,
+      backgroundColor: isDark ? AppTheme.darkBg : AppTheme.bgPale,
       appBar: AppBar(
         title: Row(
           children: [
@@ -29,27 +25,29 @@ class HomeScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
                   colors: [AppTheme.greenPrimary, AppTheme.greenDark],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: const Icon(Icons.agriculture, size: 18, color: Colors.white),
             ),
             const SizedBox(width: 8),
-            const Text(
+            Text(
               'AgrIA',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: isDark ? Colors.white : AppTheme.textDark,
+              ),
             ),
           ],
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: isDark ? AppTheme.darkSurface : Colors.white,
         elevation: 0,
         centerTitle: false,
         actions: [
           const LanguageSelector(),
           IconButton(
-            icon: const Icon(Icons.logout, color: AppTheme.textDark),
+            icon: Icon(Icons.logout, color: isDark ? Colors.white : AppTheme.textDark),
             onPressed: () async {
               await auth.logout();
               if (context.mounted) Navigator.pushReplacementNamed(context, '/login');
@@ -62,35 +60,25 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Section Bienvenue
+            // Carte de bienvenue
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
+                gradient: const LinearGradient(
                   colors: [AppTheme.greenPrimary, AppTheme.greenDark],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(24),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 50,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        child: const Icon(Icons.person, size: 28, color: Colors.white),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
@@ -107,31 +95,33 @@ class HomeScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.15),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: const Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.analytics, size: 14, color: Colors.white),
-                        SizedBox(width: 4),
-                        Text('Dernier scan: Aujourd\'hui', style: TextStyle(fontSize: 12, color: Colors.white)),
+                        const Icon(Icons.agriculture, size: 40, color: Colors.white),
                       ],
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.analytics, size: 14, color: Colors.white),
+                          SizedBox(width: 4),
+                          Text(
+                            'Dernier scan : Aujourd\'hui',
+                            style: TextStyle(fontSize: 12, color: Colors.white),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 24),
-
-            // Section Diagnostic
             const Text(
               'DIAGNOSTIC',
               style: TextStyle(
@@ -146,28 +136,28 @@ class HomeScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: _buildActionCard(
-                    icon: Icons.camera_alt,
-                    title: 'Scanner',
-                    subtitle: 'Photo d\'une plante',
-                    color: AppTheme.greenPrimary,
-                    onTap: () => Navigator.pushNamed(context, '/scan'),
+                    Icons.camera_alt,
+                    'Scanner',
+                    'Photo d\'une plante',
+                    AppTheme.greenPrimary,
+                    () => Navigator.pushNamed(context, '/scan'),
+                    isDark,
                   ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: _buildActionCard(
-                    icon: Icons.history,
-                    title: 'Historique',
-                    subtitle: 'Vos analyses',
-                    color: Colors.blue,
-                    onTap: () => Navigator.pushNamed(context, '/history'),
+                    Icons.history,
+                    'Historique',
+                    'Vos analyses',
+                    Colors.blue,
+                    () => Navigator.pushNamed(context, '/history'),
+                    isDark,
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 24),
-
-            // Section Apprentissage
             const Text(
               'APPRENTISSAGE',
               style: TextStyle(
@@ -182,28 +172,28 @@ class HomeScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: _buildActionCard(
-                    icon: Icons.menu_book,
-                    title: 'Bibliothèque',
-                    subtitle: 'Maladies référencées',
-                    color: Colors.orange,
-                    onTap: () => Navigator.pushNamed(context, '/library'),
+                    Icons.menu_book,
+                    'Bibliothèque',
+                    'Maladies référencées',
+                    Colors.orange,
+                    () => Navigator.pushNamed(context, '/library'),
+                    isDark,
                   ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: _buildActionCard(
-                    icon: Icons.assignment,
-                    title: 'Journal',
-                    subtitle: 'Notes et observations',
-                    color: Colors.teal,
-                    onTap: () => Navigator.pushNamed(context, '/journal'),
+                    Icons.assignment,
+                    'Journal',
+                    'Notes et observations',
+                    Colors.teal,
+                    () => Navigator.pushNamed(context, '/journal'),
+                    isDark,
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 24),
-
-            // Section Suivi
             const Text(
               'SUIVI',
               style: TextStyle(
@@ -215,21 +205,22 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             _buildLargeActionCard(
-              icon: Icons.forest,
-              title: 'Mon Jardin',
-              subtitle: 'Statistiques et évolution',
-              color: Colors.green,
-              onTap: () => Navigator.pushNamed(context, '/garden'),
+              Icons.forest,
+              'Mon Jardin',
+              'Statistiques et évolution',
+              Colors.green,
+              () => Navigator.pushNamed(context, '/garden'),
+              isDark,
             ),
             const SizedBox(height: 16),
             _buildLargeActionCard(
-              icon: Icons.person,
-              title: 'Profil',
-              subtitle: 'Paramètres et statistiques',
-              color: Colors.blueGrey,
-              onTap: () => Navigator.pushNamed(context, '/profile'),
+              Icons.person,
+              'Profil',
+              'Paramètres et statistiques',
+              Colors.blueGrey,
+              () => Navigator.pushNamed(context, '/profile'),
+              isDark,
             ),
-            const SizedBox(height: 20),
           ],
         ),
       ),
@@ -237,48 +228,47 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildActionCard({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required Color color,
-    required VoidCallback onTap,
-  }) {
+  Widget _buildActionCard(
+    IconData icon,
+    String title,
+    String subtitle,
+    Color color,
+    VoidCallback onTap,
+    bool isDark,
+  ) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? AppTheme.darkCard : Colors.white,
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.08),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
             ),
           ],
         ),
         child: Column(
           children: [
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Icon(icon, color: color, size: 26),
-            ),
-            const SizedBox(height: 10),
+            Icon(icon, size: 32, color: color),
+            const SizedBox(height: 8),
             Text(
               title,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: isDark ? Colors.white : AppTheme.textDark,
+              ),
             ),
             const SizedBox(height: 4),
             Text(
               subtitle,
-              style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
+              style: TextStyle(
+                fontSize: 11,
+                color: isDark ? Colors.grey.shade400 : AppTheme.textLight,
+              ),
               textAlign: TextAlign.center,
             ),
           ],
@@ -287,39 +277,32 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildLargeActionCard({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required Color color,
-    required VoidCallback onTap,
-  }) {
+  Widget _buildLargeActionCard(
+    IconData icon,
+    String title,
+    String subtitle,
+    Color color,
+    VoidCallback onTap,
+    bool isDark,
+  ) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? AppTheme.darkCard : Colors.white,
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.08),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
             ),
           ],
         ),
         child: Row(
           children: [
-            Container(
-              width: 52,
-              height: 52,
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Icon(icon, color: color, size: 28),
-            ),
+            Icon(icon, size: 32, color: color),
             const SizedBox(width: 16),
             Expanded(
               child: Column(
@@ -327,17 +310,27 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: isDark ? Colors.white : AppTheme.textDark,
+                    ),
                   ),
-                  const SizedBox(height: 4),
                   Text(
                     subtitle,
-                    style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: isDark ? Colors.grey.shade400 : AppTheme.textLight,
+                    ),
                   ),
                 ],
               ),
             ),
-            Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey.shade400),
+            Icon(
+              Icons.arrow_forward_ios,
+              size: 16,
+              color: isDark ? Colors.grey.shade400 : AppTheme.textLight,
+            ),
           ],
         ),
       ),

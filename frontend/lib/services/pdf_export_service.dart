@@ -47,7 +47,6 @@ class PdfExportService {
     final file = File(
         '${dir.path}/diagnostic_agria_${DateTime.now().millisecondsSinceEpoch}.pdf');
     await file.writeAsBytes(bytes);
-
     return file;
   }
 
@@ -58,34 +57,26 @@ class PdfExportService {
         pw.Row(
           mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
           children: [
-            pw.Text(
-              'AgrIA',
-              style: pw.TextStyle(
-                fontSize: 28,
-                fontWeight: pw.FontWeight.bold,
-                color: PdfColors.green800,
-              ),
-            ),
+            pw.Text('AgrIA',
+                style: pw.TextStyle(
+                    fontSize: 28,
+                    fontWeight: pw.FontWeight.bold,
+                    color: PdfColors.green800)),
             pw.Text(
               '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}',
-              style: const pw.TextStyle(fontSize: 12, color: PdfColors.grey600),
+              style: pw.TextStyle(fontSize: 12, color: PdfColors.grey),
             ),
           ],
         ),
         pw.SizedBox(height: 5),
-        pw.Text(
-          'Rapport de diagnostic végétal',
-          style: pw.TextStyle(
-              fontSize: 18,
-              fontWeight: pw.FontWeight.w500,
-              color: PdfColors.grey700),
-        ),
+        pw.Text('Rapport de diagnostic végétal',
+            style: pw.TextStyle(
+                fontSize: 18,
+                fontWeight: pw.FontWeight.bold,
+                color: PdfColors.grey)),
         pw.Divider(thickness: 2),
         pw.SizedBox(height: 10),
-        pw.Text(
-          'Patient : $userName',
-          style: const pw.TextStyle(fontSize: 14),
-        ),
+        pw.Text('Patient : $userName', style: pw.TextStyle(fontSize: 14)),
       ],
     );
   }
@@ -99,21 +90,16 @@ class PdfExportService {
       ),
       child: pw.Row(
         children: [
-          pw.Icon(pw.Icons.eco, size: 32, color: PdfColors.green800),
+          pw.Text('', style: pw.TextStyle(fontSize: 32)),
           pw.SizedBox(width: 15),
           pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
-              pw.Text(
-                'Plante diagnostiquée',
-                style:
-                    const pw.TextStyle(fontSize: 12, color: PdfColors.grey600),
-              ),
-              pw.Text(
-                plantName,
-                style:
-                    pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold),
-              ),
+              pw.Text('Plante diagnostiquée',
+                  style: pw.TextStyle(fontSize: 12, color: PdfColors.grey)),
+              pw.Text(plantName,
+                  style: pw.TextStyle(
+                      fontSize: 20, fontWeight: pw.FontWeight.bold)),
             ],
           ),
         ],
@@ -139,34 +125,29 @@ class PdfExportService {
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
-          pw.Text(
-            '🔬 Diagnostic',
-            style: const pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold),
-          ),
+          pw.Text('Diagnostic',
+              style:
+                  pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold)),
           pw.SizedBox(height: 10),
-          pw.Text(
-            diseaseName,
-            style: pw.TextStyle(
-                fontSize: 22, fontWeight: pw.FontWeight.bold, color: textColor),
-          ),
+          pw.Text(diseaseName,
+              style: pw.TextStyle(
+                  fontSize: 22,
+                  fontWeight: pw.FontWeight.bold,
+                  color: textColor)),
           pw.SizedBox(height: 10),
           pw.Row(
             children: [
               pw.Text('Niveau de confiance : '),
-              pw.Text(
-                '${confidence.toStringAsFixed(1)}%',
-                style: pw.TextStyle(
-                  fontWeight: pw.FontWeight.bold,
-                  color: textColor,
-                ),
-              ),
+              pw.Text('${confidence.toStringAsFixed(1)}%',
+                  style: pw.TextStyle(
+                      fontWeight: pw.FontWeight.bold, color: textColor)),
             ],
           ),
           pw.SizedBox(height: 8),
           pw.LinearProgressIndicator(
             value: confidence / 100,
             backgroundColor: PdfColors.grey200,
-            color: isHighConfidence ? PdfColors.green600 : PdfColors.orange600,
+            valueColor: isHighConfidence ? PdfColors.green : PdfColors.orange,
           ),
         ],
       ),
@@ -177,21 +158,18 @@ class PdfExportService {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.Text(
-          '📋 Symptômes observés',
-          style:
-              const pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold),
-        ),
+        pw.Text(' Symptômes observés',
+            style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
         pw.SizedBox(height: 10),
         ...symptoms.map((symptom) => pw.Padding(
               padding: const pw.EdgeInsets.only(bottom: 8),
               child: pw.Row(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
-                  pw.Text('• ', style: const pw.TextStyle(fontSize: 14)),
+                  pw.Text('• ', style: pw.TextStyle(fontSize: 14)),
                   pw.Expanded(
-                      child: pw.Text(symptom,
-                          style: const pw.TextStyle(fontSize: 14))),
+                      child:
+                          pw.Text(symptom, style: pw.TextStyle(fontSize: 14))),
                 ],
               ),
             )),
@@ -199,30 +177,25 @@ class PdfExportService {
     );
   }
 
-  static pw.Widget _buildTreatmentsSection(Map<String, List<String>> treatments) {
+  static pw.Widget _buildTreatmentsSection(
+      Map<String, List<String>> treatments) {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.Text(
-          '💊 Traitements recommandés',
-          style:
-              const pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold),
-        ),
+        pw.Text(' Traitements recommandés',
+            style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
         pw.SizedBox(height: 10),
         if (treatments.containsKey('preventif'))
           pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
-              pw.Text(
-                '🌿 Traitements préventifs :',
-                style:
-                    pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 15),
-              ),
+              pw.Text(' Traitements préventifs :',
+                  style: pw.TextStyle(
+                      fontWeight: pw.FontWeight.bold, fontSize: 15)),
               pw.SizedBox(height: 8),
               ...treatments['preventif']!.map((t) => pw.Padding(
                     padding: const pw.EdgeInsets.only(left: 10, bottom: 6),
-                    child: pw.Text('• $t',
-                        style: const pw.TextStyle(fontSize: 13)),
+                    child: pw.Text('• $t', style: pw.TextStyle(fontSize: 13)),
                   )),
               pw.SizedBox(height: 12),
             ],
@@ -231,16 +204,13 @@ class PdfExportService {
           pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
-              pw.Text(
-                '💪 Traitements curatifs :',
-                style:
-                    pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 15),
-              ),
+              pw.Text('Traitements curatifs :',
+                  style: pw.TextStyle(
+                      fontWeight: pw.FontWeight.bold, fontSize: 15)),
               pw.SizedBox(height: 8),
               ...treatments['curatif']!.map((t) => pw.Padding(
                     padding: const pw.EdgeInsets.only(left: 10, bottom: 6),
-                    child: pw.Text('• $t',
-                        style: const pw.TextStyle(fontSize: 13)),
+                    child: pw.Text('• $t', style: pw.TextStyle(fontSize: 13)),
                   )),
             ],
           ),
@@ -252,19 +222,15 @@ class PdfExportService {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.Text(
-          '📝 Notes supplémentaires',
-          style:
-              const pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold),
-        ),
+        pw.Text(' Notes supplémentaires',
+            style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
         pw.SizedBox(height: 10),
         pw.Container(
           padding: const pw.EdgeInsets.all(12),
           decoration: pw.BoxDecoration(
-            color: PdfColors.grey50,
-            borderRadius: pw.BorderRadius.circular(8),
-          ),
-          child: pw.Text(notes, style: const pw.TextStyle(fontSize: 13)),
+              color: PdfColors.grey50,
+              borderRadius: pw.BorderRadius.circular(8)),
+          child: pw.Text(notes, style: pw.TextStyle(fontSize: 13)),
         ),
       ],
     );
@@ -275,37 +241,28 @@ class PdfExportService {
       children: [
         pw.Divider(),
         pw.SizedBox(height: 15),
-        pw.Text(
-          'Ce rapport a été généré automatiquement par AgrIA',
-          style: pw.TextStyle(fontSize: 10, color: PdfColors.grey500),
-          textAlign: pw.TextAlign.center,
-        ),
+        pw.Text('Ce rapport a été généré automatiquement par AgrIA',
+            style: pw.TextStyle(fontSize: 10, color: PdfColors.grey),
+            textAlign: pw.TextAlign.center),
         pw.SizedBox(height: 5),
-        pw.Text(
-          'Intelligence Artificielle pour l\'Agriculture',
-          style: pw.TextStyle(fontSize: 10, color: PdfColors.grey500),
-          textAlign: pw.TextAlign.center,
-        ),
+        pw.Text('Intelligence Artificielle pour l\'Agriculture',
+            style: pw.TextStyle(fontSize: 10, color: PdfColors.grey),
+            textAlign: pw.TextAlign.center),
         pw.SizedBox(height: 5),
-        pw.Text(
-          'www.agria.com',
-          style: pw.TextStyle(fontSize: 10, color: PdfColors.grey500),
-          textAlign: pw.TextAlign.center,
-        ),
+        pw.Text('www.agria.com',
+            style: pw.TextStyle(fontSize: 10, color: PdfColors.grey),
+            textAlign: pw.TextAlign.center),
       ],
     );
   }
 
   static Future<void> sharePdf(File file) async {
-    await Share.shareXFiles(
-      [XFile(file.path)],
-      text: '📊 Rapport de diagnostic AgrIA',
-    );
+    await Share.shareXFiles([XFile(file.path)],
+        text: '📊 Rapport de diagnostic AgrIA');
   }
 
   static Future<void> printPdf(File file) async {
     await Printing.layoutPdf(
-      onLayout: (PdfPageFormat format) async => file.readAsBytes(),
-    );
+        onLayout: (PdfPageFormat format) async => file.readAsBytes());
   }
 }

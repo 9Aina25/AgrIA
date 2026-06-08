@@ -32,7 +32,6 @@ class _LoginScreenState extends State<LoginScreen> {
     if (success) {
       Navigator.pushReplacementNamed(context, '/home');
     } else {
-      // Message générique (le backend renvoie déjà le bon détail)
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Email ou mot de passe incorrect, ou compte non activé')),
       );
@@ -41,14 +40,21 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFFe8f5ee), Color(0xFFf7fcf9), Color(0xFFd4f5e3)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+        decoration: BoxDecoration(
+          gradient: isDark
+              ? const LinearGradient(
+                  colors: [AppTheme.darkBg, Color(0xFF1A2E1A)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : const LinearGradient(
+                  colors: [Color(0xFFe8f5ee), Color(0xFFf7fcf9), Color(0xFFd4f5e3)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
         ),
         child: SafeArea(
           child: SingleChildScrollView(
@@ -64,29 +70,34 @@ class _LoginScreenState extends State<LoginScreen> {
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: [
                       BoxShadow(
-                          color: AppTheme.greenPrimary.withValues(alpha: 0.4),
-                          blurRadius: 32,
-                          offset: const Offset(0, 8))
+                        color: AppTheme.greenPrimary.withOpacity(0.4),
+                        blurRadius: 32,
+                        offset: const Offset(0, 8),
+                      ),
                     ],
                   ),
                   child: const Center(
-                      child: Icon(Icons.agriculture,
-                          size: 44, color: Colors.white)),
+                    child: Icon(Icons.agriculture, size: 44, color: Colors.white),
+                  ),
                 ),
                 const SizedBox(height: 24),
-                const Text('AgrIA',
-                    style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.w700,
-                        color: AppTheme.textDark)),
+                Text(
+                  'AgrIA',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w700,
+                    color: isDark ? Colors.white : AppTheme.textDark,
+                  ),
+                ),
                 const SizedBox(height: 8),
-                const Text('Diagnostiquez vos plantes avec l\'IA',
-                    style: TextStyle(fontSize: 14, color: AppTheme.textLight)),
+                Text(
+                  'Diagnostiquez vos plantes avec l\'IA',
+                  style: TextStyle(fontSize: 14, color: isDark ? Colors.grey.shade400 : AppTheme.textLight),
+                ),
                 const SizedBox(height: 36),
                 TextField(
                   controller: _emailController,
-                  decoration: const InputDecoration(
-                      labelText: 'Email', hintText: 'exemple@agria.com'),
+                  decoration: const InputDecoration(labelText: 'Email', hintText: 'exemple@agria.com'),
                   keyboardType: TextInputType.emailAddress,
                 ),
                 const SizedBox(height: 16),
@@ -98,16 +109,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     hintText: '••••••••',
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _obscurePassword
-                            ? Icons.visibility_off
-                            : Icons.visibility,
+                        _obscurePassword ? Icons.visibility_off : Icons.visibility,
                         color: AppTheme.textLight,
                       ),
-                      onPressed: () {
-                        setState(() {
-                          _obscurePassword = !_obscurePassword;
-                        });
-                      },
+                      onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                     ),
                   ),
                 ),
@@ -115,36 +120,26 @@ class _LoginScreenState extends State<LoginScreen> {
                 _isLoading
                     ? const Center(child: CircularProgressIndicator())
                     : ElevatedButton(
-                        onPressed: _login, child: const Text('Se connecter')),
+                        onPressed: _login,
+                        child: const Text('Se connecter'),
+                      ),
                 TextButton(
-                  onPressed: () {
-                    print("🔵 Clic sur Mot de passe oublié");
-                    Navigator.pushNamed(context, '/forgot-password');
-                  },
+                  onPressed: () => Navigator.pushNamed(context, '/forgot-password'),
                   child: const Text('Mot de passe oublié ?', style: TextStyle(color: Colors.grey)),
                 ),
                 const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('Pas encore de compte ?',
-                        style: TextStyle(color: AppTheme.textLight)),
+                    Text('Pas encore de compte ?', style: TextStyle(color: isDark ? Colors.grey.shade400 : AppTheme.textLight)),
                     TextButton(
-                      onPressed: () =>
-                          Navigator.pushNamed(context, '/register'),
-                      child: const Text('S\'inscrire',
-                          style: TextStyle(
-                              color: AppTheme.greenPrimary,
-                              fontWeight: FontWeight.w700)),
+                      onPressed: () => Navigator.pushNamed(context, '/register'),
+                      child: const Text(
+                        'S\'inscrire',
+                        style: TextStyle(color: AppTheme.greenPrimary, fontWeight: FontWeight.w700),
+                      ),
                     ),
                   ],
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Compte démo : test@example.com / 123456',
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: AppTheme.textLight.withValues(alpha: 0.7)),
                 ),
               ],
             ),

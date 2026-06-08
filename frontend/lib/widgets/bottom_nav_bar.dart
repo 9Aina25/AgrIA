@@ -3,7 +3,6 @@ import '../utils/theme.dart';
 
 class BottomNavBar extends StatelessWidget {
   final int currentIndex;
-
   const BottomNavBar({super.key, required this.currentIndex});
 
   void _onTap(BuildContext context, int index) {
@@ -21,6 +20,9 @@ class BottomNavBar extends StatelessWidget {
         Navigator.pushReplacementNamed(context, '/garden');
         break;
       case 4:
+        Navigator.pushReplacementNamed(context, '/chat');
+        break;
+      case 5:
         Navigator.pushReplacementNamed(context, '/profile');
         break;
     }
@@ -28,33 +30,22 @@ class BottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, -2),
-          ),
-        ],
-      ),
-      child: BottomNavigationBar(
-        currentIndex: currentIndex,
-        onTap: (index) => _onTap(context, index),
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.white,
-        selectedItemColor: AppTheme.greenPrimary,
-        unselectedItemColor: AppTheme.textLight,
-        elevation: 0,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home_outlined), activeIcon: Icon(Icons.home), label: 'Accueil'),
-          BottomNavigationBarItem(icon: Icon(Icons.camera_alt_outlined), activeIcon: Icon(Icons.camera_alt), label: 'Scanner'),
-          BottomNavigationBarItem(icon: Icon(Icons.menu_book_outlined), activeIcon: Icon(Icons.menu_book), label: 'Bibliothèque'),
-          BottomNavigationBarItem(icon: Icon(Icons.forest_outlined), activeIcon: Icon(Icons.forest), label: 'Mon Jardin'),
-          BottomNavigationBarItem(icon: Icon(Icons.person_outline), activeIcon: Icon(Icons.person), label: 'Profil'),
-        ],
-      ),
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return BottomNavigationBar(
+      currentIndex: currentIndex,
+      onTap: (index) => _onTap(context, index),
+      type: BottomNavigationBarType.fixed,
+      backgroundColor: isDark ? AppTheme.darkCard : Colors.white,
+      selectedItemColor: AppTheme.greenPrimary,
+      unselectedItemColor: isDark ? AppTheme.darkTextSecondary : AppTheme.textLight,
+      items: const [
+        BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: 'Accueil'),
+        BottomNavigationBarItem(icon: Icon(Icons.camera_alt_outlined), label: 'Scanner'),
+        BottomNavigationBarItem(icon: Icon(Icons.menu_book_outlined), label: 'Bibliothèque'),
+        BottomNavigationBarItem(icon: Icon(Icons.forest_outlined), label: 'Mon Jardin'),
+        BottomNavigationBarItem(icon: Icon(Icons.chat_bubble_outline), label: 'Chat'),
+        BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'Profil'),
+      ],
     );
   }
 }

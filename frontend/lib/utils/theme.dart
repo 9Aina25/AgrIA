@@ -1,4 +1,3 @@
-// utils/theme.dart
 import 'package:flutter/material.dart';
 
 class AppTheme {
@@ -29,12 +28,12 @@ class AppTheme {
   static const Color darkBorder = Color(0xFF2A4A2A);
   static const Color darkText = Color(0xFFE4E4E4);
   static const Color darkTextSecondary = Color(0xFFA0A0A0);
-  
+
   static ThemeData lightTheme = ThemeData(
+    brightness: Brightness.light,
     primaryColor: greenPrimary,
     scaffoldBackgroundColor: bgPale,
     fontFamily: 'Poppins',
-    brightness: Brightness.light,
     appBarTheme: const AppBarTheme(
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -43,7 +42,7 @@ class AppTheme {
       titleTextStyle: TextStyle(
         color: textDark,
         fontSize: 20,
-        fontWeight: FontWeight.w600,  // ← Changé: w500 → w600
+        fontWeight: FontWeight.w600,
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(
@@ -77,12 +76,12 @@ class AppTheme {
       color: bgWhite,
     ),
   );
-  
+
   static ThemeData darkTheme = ThemeData(
+    brightness: Brightness.dark,
     primaryColor: greenPrimary,
     scaffoldBackgroundColor: darkBg,
     fontFamily: 'Poppins',
-    brightness: Brightness.dark,
     appBarTheme: const AppBarTheme(
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -91,7 +90,7 @@ class AppTheme {
       titleTextStyle: TextStyle(
         color: darkText,
         fontSize: 20,
-        fontWeight: FontWeight.w600,  // ← Changé: w500 → w600
+        fontWeight: FontWeight.w600,
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(

@@ -19,7 +19,14 @@ class MongoDB:
         self.notifications = self.db["notifications"]
         self.plants = self.db["plants"]
         self.password_resets = self.db["password_resets"]
+        # Ajout des collections pour le chat
+        self.conversations = self.db["conversations"]
+        self.chat_messages = self.db["chat_messages"]
         print(f"✅ MongoDB connecté: {settings.MONGO_URI}")
+    
+    def __getitem__(self, name):
+        """Permet l'accès via db['nom_collection'] en plus des attributs."""
+        return self.db[name]
     
     def close(self):
         self.client.close()

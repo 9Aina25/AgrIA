@@ -28,38 +28,37 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
-Future<void> _register() async {
-  final name = _nameController.text.trim();
-  final email = _emailController.text.trim();
-  final password = _passwordController.text;
-  final confirm = _confirmController.text;
+  Future<void> _register() async {
+    final name = _nameController.text.trim();
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+    final confirm = _confirmController.text;
 
-  if (name.isEmpty || email.isEmpty || password.isEmpty) {
-    _showError('Veuillez remplir tous les champs');
-    return;
-  }
-  if (password != confirm) {
-    _showError('Les mots de passe ne correspondent pas');
-    return;
-  }
-  if (password.length < 6) {
-    _showError('Le mot de passe doit contenir au moins 6 caractères');
-    return;
-  }
+    if (name.isEmpty || email.isEmpty || password.isEmpty) {
+      _showError('Veuillez remplir tous les champs');
+      return;
+    }
+    if (password != confirm) {
+      _showError('Les mots de passe ne correspondent pas');
+      return;
+    }
+    if (password.length < 6) {
+      _showError('Le mot de passe doit contenir au moins 6 caractères');
+      return;
+    }
 
-  setState(() => _isLoading = true);
-  final auth = Provider.of<AuthService>(context, listen: false);
-  final response = await auth.registerWithResponse(email, password, name); // nouvelle méthode
-  setState(() => _isLoading = false);
+    setState(() => _isLoading = true);
+    final auth = Provider.of<AuthService>(context, listen: false);
+    final response = await auth.registerWithResponse(email, password, name);
+    setState(() => _isLoading = false);
+    if (!mounted) return;
 
-  if (!mounted) return;
-
-  if (response.success) {
-    _showValidationDialog();
-  } else {
-    _showError(response.message); // affiche le vrai message d’erreur
+    if (response.success) {
+      _showValidationDialog();
+    } else {
+      _showError(response.message);
+    }
   }
-}
 
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -92,14 +91,21 @@ Future<void> _register() async {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFFe8f5ee), Color(0xFFf7fcf9), Color(0xFFd4f5e3)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+        decoration: BoxDecoration(
+          gradient: isDark
+              ? const LinearGradient(
+                  colors: [AppTheme.darkBg, Color(0xFF1A2E1A)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : const LinearGradient(
+                  colors: [Color(0xFFe8f5ee), Color(0xFFf7fcf9), Color(0xFFd4f5e3)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
         ),
         child: SafeArea(
           child: SingleChildScrollView(
@@ -107,7 +113,6 @@ Future<void> _register() async {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Logo
                 Container(
                   width: 80,
                   height: 80,
@@ -116,7 +121,7 @@ Future<void> _register() async {
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: [
                       BoxShadow(
-                        color: AppTheme.greenPrimary.withValues(alpha: 0.4),
+                        color: AppTheme.greenPrimary.withOpacity(0.4),
                         blurRadius: 32,
                         offset: const Offset(0, 8),
                       ),
@@ -127,32 +132,28 @@ Future<void> _register() async {
                   ),
                 ),
                 const SizedBox(height: 24),
-                const Text(
+                Text(
                   'Créer un compte',
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700, color: AppTheme.textDark),
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w700,
+                    color: isDark ? Colors.white : AppTheme.textDark,
+                  ),
                 ),
                 const SizedBox(height: 8),
-                const Text(
+                Text(
                   'Rejoignez des milliers de plantophiles',
-                  style: TextStyle(fontSize: 14, color: AppTheme.textLight),
+                  style: TextStyle(fontSize: 14, color: isDark ? Colors.grey.shade400 : AppTheme.textLight),
                 ),
                 const SizedBox(height: 36),
-
-                // Formulaire
                 TextField(
                   controller: _nameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Nom complet',
-                    hintText: 'Alex R.',
-                  ),
+                  decoration: const InputDecoration(labelText: 'Nom complet', hintText: 'Alex R.'),
                 ),
                 const SizedBox(height: 16),
                 TextField(
                   controller: _emailController,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                    hintText: 'vous@exemple.com',
-                  ),
+                  decoration: const InputDecoration(labelText: 'Email', hintText: 'vous@exemple.com'),
                   keyboardType: TextInputType.emailAddress,
                 ),
                 const SizedBox(height: 16),
@@ -167,11 +168,7 @@ Future<void> _register() async {
                         _obscurePassword ? Icons.visibility_off : Icons.visibility,
                         color: AppTheme.textLight,
                       ),
-                      onPressed: () {
-                        setState(() {
-                          _obscurePassword = !_obscurePassword;
-                        });
-                      },
+                      onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                     ),
                   ),
                 ),
@@ -186,17 +183,11 @@ Future<void> _register() async {
                         _obscureConfirmPassword ? Icons.visibility_off : Icons.visibility,
                         color: AppTheme.textLight,
                       ),
-                      onPressed: () {
-                        setState(() {
-                          _obscureConfirmPassword = !_obscureConfirmPassword;
-                        });
-                      },
+                      onPressed: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
                     ),
                   ),
                 ),
                 const SizedBox(height: 24),
-
-                // Bouton d'inscription
                 _isLoading
                     ? const Center(child: CircularProgressIndicator())
                     : ElevatedButton(
@@ -204,23 +195,15 @@ Future<void> _register() async {
                         child: const Text('Créer mon compte'),
                       ),
                 const SizedBox(height: 16),
-
-                // Lien vers connexion
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
-                      'Déjà un compte ?',
-                      style: TextStyle(color: AppTheme.textLight),
-                    ),
+                    Text('Déjà un compte ?', style: TextStyle(color: isDark ? Colors.grey.shade400 : AppTheme.textLight)),
                     TextButton(
                       onPressed: () => Navigator.pop(context),
                       child: const Text(
                         'Se connecter',
-                        style: TextStyle(
-                          color: AppTheme.greenPrimary,
-                          fontWeight: FontWeight.w700,
-                        ),
+                        style: TextStyle(color: AppTheme.greenPrimary, fontWeight: FontWeight.w700),
                       ),
                     ),
                   ],
